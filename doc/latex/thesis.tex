@@ -1,0 +1,74 @@
+\documentclass[11pt,a4paper]{report}
+% - twoside, openright: options for printed version
+
+%% PACKAGES
+\usepackage[utf8]{inputenc}
+\usepackage[numericrefs]{feupteses}
+% - onpaper: links are not shown (for paper versions)
+% - backrefs: include back references from bibliography to citation place
+\usepackage[toc=true,section=chapter,acronym]{glossaries}
+
+%% GLOSSARIES
+\makeglossaries
+\include{prolog/glossaries}
+
+%% INDEX (at the end of the document)
+%\makeindex
+
+%% PATH TO FIGURES DIRECTORY
+\graphicspath{{figures/}}
+
+%% MACROS
+\include{mymacros}
+
+
+
+%%========================================
+%% DOCUMENT
+%%========================================
+\begin{document}
+
+%% METADATA
+\title{RicoSLAM: Long-Term Localization and Mapping in Dynamic Environments}
+\author{Ricardo B. Sousa}
+
+\degree{Programa Doutoral em Engenharia Electrot\'{e}cnica e de Computadores}
+
+%\thesisdate{December 31, 2024}
+\copyrightnotice{Ricardo B. Sousa, 2022}
+
+\supervisor{Supervisor}{Prof. Ant\'{o}nio Paulo Moreira, PhD}
+\supervisor{Second Supervisor}{H\'{e}ber Miguel Sobreira, PhD}
+
+% Committee:
+%\committeetext{Approved by \ldots:}
+%\committeemember{President}{Name of the President}
+%\committeemember{Referee}{Name of the Referee}
+%\committeemember{Referee}{Name of the Referee}
+
+%\signature
+
+\logo{uporto-feup.pdf}
+
+\additionalfronttext{Thesis Research Plan}
+
+%% PROLOG
+\begin{Prolog}
+\include{prolog/0_index}
+\end{Prolog}
+
+%% BODY
+\StartBody
+\include{content/0_index}
+
+%% BIBLIOGRAPHY
+\PrintBib{bibliography/myrefs}
+
+%% APPENDIXES
+\appendix
+\include{appendices/0_index}
+
+%% INDEX
+%\PrintIndex
+
+\end{document}
