@@ -1,8 +1,60 @@
 \chapter{Introduction}\label{chap:intro}
 
-\acrfull{slam}
+This research aims to contribute to the progress of the current state of the art on \glsfirst{SLAM}. This work focuses on challenges inherent to the long-term operation of \glspl{AMR} while performing SLAM in dynamic indoor environments. The main goals are to maintain a stable and up-to-date representation of the environment and, consequently, improve the localization performance of \glspl{AMR}. In this context, the proposed approach should develop new algorithms and take advantage of emerging technologies to overcome the challenges found through the research work.
+
+This chapter is divided into five sections.
+Section~\ref{sec:context} contextualizes this research work and describes the primary challenges related to long-term \gls{SLAM}.
+Section~\ref{sec:motivation} presents the motivations that led to the formulation of this research plan.
+Then, Section~\ref{sec:goals} establishes the goals for the PhD thesis.
+Section~\ref{sec:research-method:intro} details the research methodology that will support the research work.
+Finally, Section~\ref{sec:organization} defines the structure of this document.
+
+
+
+
+
 
 \section{Context}\label{sec:context}
+
+Nowadays, logistic and retail companies, warehouses, healthcare institutions, automotive and aerospace industries, agriculture businesses, and healthcare institutions are using \glspl{AMR} to automate tasks such as transportation and security monitoring. The tasks automation improves operational efficiency, flexibility, and productivity achieving higher efficiencies and lower production costs~\cite{amr:overview:intel}.
+Consequently, these improvements contribute to the growth of the global economy and increase the global interest in the \gls{AMR} market. Indeed, a study elaborated by AgileIntel Research~\cite{amr:market-growth} estimates the value of the global \gls{AMR} market at US\$2,525.66 million in 2021 and is estimated to grow at a \gls{CAGR} of 15.4\% between 2022 and 2029, as illustrated in Figure~\ref{fig:amr:market-growth}.
+The conclusions of the study \cite{amr:market-growth} highlight the importance of \glspl{AMR} for global economics while also forecast an increasing demand for \gls{AMR} systems in the following years from 2022.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{intro/amr_market-growth.png}
+  \caption[Global Autonomous Mobile Robot market estimated growth by AgileIntel Research during 2018--2029 in US\$ million]{Global \glsfirst{AMR} market estimated growth by AgileIntel Research during 2018--2029 in US\$ million~\cite{amr:market-growth}}
+  \label{fig:amr:market-growth}
+\end{figure}
+
+An \gls{AMR} requires a representation of its surroundings by extracting meaningful data from its sensors to localize itself relative to the environment~\cite{book:intro-robotics}.
+\gls{SLAM} addresses this problem by incorporating the robot state estimation concurrently with the mapping process to build a representation of the environment perceived by the robot. The state is described by the robot's pose (position and orientation), even though other variables may be included in the state, such as velocity and calibration parameters. As for the environment representation, the mapping process originates a map incrementally built when exploring unknown areas or refined on passages through known locations in order to describe the environment in which the robot operates~\cite{review:cadena:2016}.
+
+In a static scene, the robot would only need to map once because the map would remain consistent with the environment throughout time.
+However, industrial locations, agricultural sites, warehouses, and service-oriented applications such as shopping centers and healthcare institutions have inherently moving elements in the scene (humans, objects), reconfiguration of the environment (reorganization of machines, patient beds), and appearance variations (lighting, weather, seasonal, or daytime changes).
+The deployment of \glspl{AMR} in these varying conditions are a challenge for the \gls{SLAM} system, where the system should decide how (consider the most current state, the evolution of the environment dynamics, only the most static changes?) and when to update the map (when the variations occur, after a certain time?).
+This challenge is also known as the stability-plasticity dilemma, where a lifelong \gls{SLAM} system should both adapt to new environment changes and preserve old states over time~\cite{biber-duckett:2009:0278364908096286}.
+Furthermore, the map would grow indefinitely when gathering new information from the environment without any map management system. This ever-growing problem poses another challenge for the SLAM system in the long-term due to the limited computational resources of the mapping vehicle. Indeed, the map size should be dependent on the environment area and not on the trajectory length of the mapping process nor operation time, only growing when the robot would explore unknown locations~\cite{kretzschmar-stachniss:2012:0278364912455072}.
+
+Currently, the literature is predominantly focused on the appearance invariance challenge of long-term localization and mapping, especially in outdoor environments, given the recent growing interest in autonomous vehicles.
+Although vision sensors are greatly affected by appearance variations, \glspl{CNN}-based features extracted from the visual images are being used for localization in challenging outdoor scenes, given their more discriminative properties compared to handcrafted features~\cite{taisho-kanji:2016:7866383,xin-et-al:2017:8310121,chen-et-al:2018:2859916,yu-et-al:2019:8961714,camara-et-al:2020:9196967,liu-et-al:2021:9561126}.
+The current research also uses other sensor modalities, such as \gls{LiDAR}~\cite{yin-et-al:2018:8593562,kim-et-al:2019:2897340,xu-et-al:2021:3060741,yin-et-al:2021:661199} (also known as 3D laser scanners) and Radar~\cite{martini-et-al:2020:s20216002,yin-et-al:2021:661199}, to overcome some limitations of vision sensors.
+While visual data is affected by illumination changes of day-night situations or changing weather and seasonal conditions, laser-based localization does not suffer from illumination variance. Even so, fog or direct light can still affect the laser readings. As for radar, the sensor is invariant to both lighting and weather changes. Still, noisy measurements affect the performance of radar-based \gls{SLAM} in long-term scenarios~\cite{yin-et-al:2021:661199}.
+Moreover, the existent literature also evaluates the long-term stability of features to only using stable ones for localization and mapping, using as scoring functions predictors such as number of observations and concentration ratio~\cite{berrio-et-al:2019:8814289,berrio-et-al:2021:3094485}.
+
+Several works already focus on the ever-growing problem of continuously performing \gls{SLAM}.
+The concept of mutual information from information theory is the most common methodology to determine which nodes to remove from the map for the graph formulation of \gls{SLAM}~\cite{kretzschmar-et-al:2010:2,kretzschmar-stachniss:2012:0278364912455072,huang-et-al:2013:6698835,carlevaris-bianco-et-al:2014:2347571,mazuran-et-al:2016:0278364915581629}. However, this methodology is mostly intended for offline execution (e.g., between running sessions) due to its additional computational cost when operating online.
+Other methodologies to manage the size of the graph evaluate outdated information between current view and the map~\cite{walcott-bryant-et-al:2012:6385561,boniardi-et-al:2019:003}, the spatial density of nodes~\cite{johannsson-et-al:2013:6630556,zeng-si:2021:6}, and the node time recency~\cite{kurz-et-al:2021:9636530,ali-et-al:2021:3100882}.
+In feature-based \gls{SLAM}, management policies such as counting matching observations of features~\cite{dayoub-et-al:2011:013,bacca-et-al:2013:003} and using multiple predictor functions~\cite{berrio-et-al:2019:8814289,berrio-et-al:2021:3094485,dymczyk-et-al:2016:7759673,mühlfellner-et-al:2016:21595}, similarly to appearance invariance methods, also try to constraint the map size to only be dependent on the explored environment area.
+
+As for dealing with dynamic environments, an intuitive approach is to distinguish between static and dynamic observations, favoring the stable ones for localization, and having two maps representing the most stable and the more dynamic representations of the environment~\cite{walcott-bryant-et-al:2012:6385561,wang-et-al:2019:8793499,zhu-et-al:2021:9561584}.
+Inspired by the human memory multi-store model of Atkinson and Shiffrin~\cite{discussion:atkinson:stm+ltm}, \gls{STM} and \gls{LTM} maps try to capture at least two different levels of dynamics~\cite{biber-duckett:2009:0278364908096286,dayoub-et-al:2011:013,bacca-et-al:2013:003}.
+Furthermore, the rejection of dynamic objects or features for localization and mapping to only consider stable observations is performed in the literature by methods such as the YOLO network~\cite{yue-et-al:2020:9197072,zhu-et-al:2021:9561584} and pixel-wise semantic segmentation~\cite{singh-et-al:2021:9564866,song-et-al:2019:8967749,ganti-waslander:2019:00024}.
+The methodologies mentioned previously for dealing with dynamic environments model the environment dynamics as static (permanent change), semi-static (short-term static object or static at the current observation instant), or dynamic (moving object in the scene).
+In contrast, assuming the independence of observations, Markov-based processes can be used to model and predict a value for the environment dynamics~\cite{tipaldi-et-al:2013:0278364913502830,rapp-et-al:2015:77}. However, these models are usually intended for offline usage between sessions and the assumption of independent observations may not be valid because static and dynamic objects may influence the dynamics of their surroundings.
+Although the \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} algorithm estimates online the dynamics through spectral analysis, the method only assumes periodic changes in the environment.
+The \gls{ARMA}~\parencite{wang-et-al:2020:9468884} models both aperiodic and periodic changes but, still, its offline operation does not allow an online estimation of the environment dynamics.
+
 
 
 

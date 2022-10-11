@@ -1,14 +1,25 @@
-\documentclass[11pt,a4paper]{report}
+\documentclass[11pt,a4paper,twoside]{report}
 % - twoside, openright: options for printed version
 
 %% PACKAGES
 \usepackage[utf8]{inputenc}
+\usepackage{csquotes}
 \usepackage[numericrefs]{feupteses}
 % - onpaper: links are not shown (for paper versions)
 % - backrefs: include back references from bibliography to citation place
+\usepackage{longtable}
 \usepackage[toc=true,section=chapter,acronym]{glossaries}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{enumitem}
+\usepackage[backend=biber,
+            style=numeric-comp,
+            citestyle=numeric-comp,
+            sorting=none
+            ]{biblatex}
+\usepackage[final]{pdfpages}
 
 %% GLOSSARIES
+\setglossarystyle{listgroup}
 \makeglossaries
 \include{prolog/glossaries}
 
@@ -21,6 +32,11 @@
 %% MACROS
 \include{mymacros}
 
+%% OTHER CONFIGURATIONS
+\urlstyle{same}
+\DefineBibliographyStrings{english}{bibliography = {References}}
+\addbibresource{bibliography/myrefs.bib}
+
 
 
 %%========================================
@@ -30,15 +46,23 @@
 
 %% METADATA
 \title{RicoSLAM: Long-Term Localization and Mapping in Dynamic Environments}
-\author{Ricardo B. Sousa}
+\author{%
+Ricardo B. Sousa
+\href{https://orcid.org/0000-0003-4537-5095}{\includegraphics[width=1em]{orcid.pdf}}}
 
 \degree{Programa Doutoral em Engenharia Electrot\'{e}cnica e de Computadores}
 
 %\thesisdate{December 31, 2024}
 \copyrightnotice{Ricardo B. Sousa, 2022}
 
-\supervisor{Supervisor}{Prof. Ant\'{o}nio Paulo Moreira, PhD}
-\supervisor{Second Supervisor}{H\'{e}ber Miguel Sobreira, PhD}
+\supervisor{Supervisor}{%
+Prof. Ant\'{o}nio Paulo Moreira
+\href{https://orcid.org/0000-0001-8573-3147}{\includegraphics[width=1em]{orcid.pdf}},
+PhD}
+\supervisor{Second Supervisor}{%
+H\'{e}ber M. Sobreira
+\href{https://orcid.org/0000-0002-8055-1093}{\includegraphics[width=1em]{orcid.pdf}},
+PhD}
 
 % Committee:
 %\committeetext{Approved by \ldots:}
@@ -48,7 +72,8 @@
 
 %\signature
 
-\logo{uporto-feup.pdf}
+\schoollogo{uporto-feup.pdf}
+\institutionlogo{inesctec.pdf}
 
 \additionalfronttext{Thesis Research Plan}
 
@@ -62,7 +87,7 @@
 \include{content/0_index}
 
 %% BIBLIOGRAPHY
-\PrintBib{bibliography/myrefs}
+\printbibliography[heading=bibintoc]
 
 %% APPENDIXES
 \appendix

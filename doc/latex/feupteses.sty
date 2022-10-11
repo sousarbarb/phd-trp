@@ -3,6 +3,9 @@
 %%
 %% PLEASE send improvements to jlopes at fe.up.pt and to jcf at fe.up.pt
 %%
+%% Modified by RBS (Ricardo B. Sousa) on Tue Oct 11 15:58:00 2022
+%% rbs@fe.up.pt
+%%
 
 \NeedsTeXFormat{LaTeX2e}
 \def \filename {feupteses.sty}
@@ -169,7 +172,7 @@ with the `report' document style}{}}{}
 %% Global layout of the document
 
 %% geometry package
-\RequirePackage[outer=25mm,inner=35mm,vmargin=20mm,includehead,includefoot,headheight=15pt]{geometry}
+\RequirePackage[outer=15mm,inner=25mm,vmargin=15mm,includehead,includefoot,headheight=15pt]{geometry}
 
 %% avoid widows and orphans
 \clubpenalty=6000
@@ -225,7 +228,8 @@ with the `report' document style}{}}{}
 \gdef\@school{Faculdade de Engenharia da Universidade do Porto}
 \def\school#1{\gdef\@school{#1}}
 
-\def\logo#1{\gdef\@logo{#1}}
+\def\schoollogo#1{\gdef\@schoollogo{#1}}
+\def\institutionlogo#1{\gdef\@institutionlogo{#1}}
 
 \gdef\@thesisdate{\today}
 \def\thesisdate#1{\gdef\@thesisdate{#1}}
@@ -353,7 +357,11 @@ with the `report' document style}{}}{}
 \fi
 \vfill\vfill
 \hbox to \textwidth{%
-  \setbox\@crestbox=\vbox{\includegraphics[width=72mm]{\@logo}}%
+  \setbox\@crestbox=\vbox{%
+    %\includegraphics[width=70mm]{\@schoollogo}}
+    \raisebox{-0.5\height}{\includegraphics[width=70mm]{\@schoollogo}}%
+    \hspace{10mm}%
+    \raisebox{-0.5\height}{\includegraphics[width=70mm]{\@institutionlogo}}}%
 \box\@crestbox%
 }
 \vfill%
@@ -399,7 +407,9 @@ with the `report' document style}{}}{}
    \vspace*{\fill}
    \unvbox\@vivatext
    \vskip 6mm
+   \begin{center}
    \@thesisdate
+   \end{center}
  \fi
 }
 
@@ -427,14 +437,14 @@ with the `report' document style}{}}{}
              {\markright{{\ifnum \c@secnumdepth >\z@ \thesection\ \fi #1}}}
 
 \if@twoside
-  \lhead[\fancyplain{}{\rm\thepage}]{\fancyplain{}{\sl\rightmark}}
+  \lhead[\fancyplain{}{\rm\thepage}]{\fancyplain{}{\sl\MakeUppercase{\rightmark}}}
   \chead{}
-  \rhead[\fancyplain{}{\sl\leftmark}]{\fancyplain{}{\rm\thepage}}
+  \rhead[\fancyplain{}{\sl\MakeUppercase{\leftmark}}]{\fancyplain{}{\rm\thepage}}
   \lfoot{}
   \cfoot{\fancyplain{\rm\thepage}{}}
   \rfoot{}
 \else
-  \lhead{\fancyplain{}{\sl\ifodd\c@page\rightmark\else\leftmark\fi}}
+  \lhead{\fancyplain{}{\sl\ifodd\c@page\MakeUppercase{\rightmark}\else\MakeUppercase{\leftmark}\fi}}
   \chead{}
   \rhead[]{\fancyplain{}{\rm\thepage}}
   \lfoot{}
