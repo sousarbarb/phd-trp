@@ -1,19 +1,163 @@
 \chapter{Literature Review}\label{chap:literature}
 
+The preprint of a systematic literature review on long-term localization and mapping following the \gls{PRISMA}~\cite{methodology:prisma} guidelines is available in Appendix~\ref{ap:slr} of this document.
+The study precedes the elaboration of this thesis research plan and includes an analysis of 142 literature works for discussing and analyzing methodologies focused on appearance invariance, dynamic elements, map sparsification and multi-session techniques, and other computational concerns.
+Additionally, the study discusses commonly used public datasets and the characteristics of the experimental data used by the authors of the included works in the review while presenting the most used evaluation metrics.
+However, given the main scope of this research work on lifelong \gls{SLAM} in dynamic environments, this chapter focus mainly on the discussion of localization and mapping algorithms in scenes with dynamic elements presented in the systematic review. This chapter also formulates the \gls{SLAM} problem and its most common solutions.
+
+Hence, this chapter is divided into four sections.
+Section~\ref{sec:literature-overview} summarizes the methodology of the systematic review (further detail available in Appendix~\ref{ap:slr}) on long-term localization and mapping and overviews the included literature works in terms of publication year with an emphasis on \gls{SLAM} in dynamic environments.
+Section~\ref{sec:slam} formulates the traditional \gls{SLAM} problem and presents its three most common solutions: map matching, particle filter, and pose graph implementations.
+Then, Section~\ref{sec:slam-dynamic} discusses literature works related to long-term \gls{SLAM} in dynamic environments based on the findings presented in Appendix~\ref{ap:slr}.
 
 
-\section{Research Methodology}\label{sec:research-method:literature}
+
+
+
+
+\section{Literature overview}\label{sec:literature-overview}
+
+\subsection{Review methodology}
+
+The literature review is an important process in any research project for providing a comprehensive summary of previous research on a specific topic.
+This process aims to identify the main contributions, research gaps, define current challenges and future directions in the scope of a research topic.
+However, the review methodology should be supported on relevant and rigorous frameworks for synthesizing the findings of the literature works.
+
+A systematic literature review uses explicit, rigorous, and reproducible systematic methods to synthesize the findings of works related to a particular research question, topic area, or phenomenon of interest.
+This type of review assures the quality and trustworthiness of the review's findings by presenting a complete, organized, and summarized analysis of all works considered while allowing other researchers to replicate or update the review.
+The most common standard for performing systematic reviews is the \gls{PRISMA}~\cite{methodology:prisma} statement. Even though the \gls{PRISMA}~\cite{methodology:prisma} guidelines have been designed originally for evaluating the effects of health interventions, the checklist items of the methodology are general and applicable to other subject areas.
+Therefore, the literature covered in this chapter and extensively discussed in Appendix~\ref{ap:slr} follow a systematic methodology based on the \gls{PRISMA}~\cite{methodology:prisma} guidelines. This methodology is composed by the following steps:
+
+\begin{enumerate}[nosep]
+\item definition of eligibility criteria;
+\item conceptualization of the search strategy;
+\item selection process:
+  \begin{enumerate}[nosep]
+  \item identification;
+  \item screening;
+  \item quality assessment.
+  \end{enumerate}
+\item data extraction;
+\item synthesis and analysis of the included works.
+\end{enumerate}
+
+The first step defines the eligibility criteria to determine the eligible studies for the selection process. In the systematic review on long-term localization and mapping, the criteria considered are mostly related with the type of paper -- indexation in scientific venues, subject area, reject short papers and gray, secondary, and tertiary literature, exclude dataset papers -- and availability -- full-text accessibility and language. Additionally, a coverage (exclude odometry-only approaches) and scope (not consider different or non related subjects) criteria are exclusion criteria focused on the scientific contributions of the works.
+Next, the search strategy conceptualization defines as data sources the databases ACM Digital Library~\cite{literature:db:acm}, Dimensions~\cite{literature:db:dim}, IEEE Xplore~\cite{literature:db:ieee}, INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}. The date of the last full inquiry in the systematic review was May 17, 2022. However, for the discussion of long-term \gls{SLAM} in dynamic environment in Section~\ref{sec:slam-dynamic}, recent works between the previous data until October 25, 2022, will be included for the analysis. As for the base string used to inquiring the data sources considering the title, abstract, and keywords search fields is the following one: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}.
+The selection process starts by identifying the records in the different sources using the previous base string, possibly rejecting duplicate records (Parsifal~\cite{methodology:parsifal} was the tool used for identifying duplicates) and also based on the eligibility criteria defined previously. The screening phase also excludes works based on the eligibility criteria by reading the title and abstract of the publications. Then, the quality assessment establishes another set of criteria focused on the scientific contribution of the eligible records. The assessment of eligible records rejects works based on works with no compliance in certain criteria (e.g., non detailed methodology or results sections, and works not having long-term experiments or not considering localization nor mapping problems).
+Finally, the data extraction process allows the retrieval of information for the synthesis and analysis of the included works while also rejecting articles with extended versions to improve the discussion and singularity of the methodologies proposed in the literature.
+Figure 6 illustrates the \gls{PRISMA}~\cite{methodology:prisma} flow diagram for summarizing the selection process. Further details on the systematic methodology followed for synthesizing and analysis literature works on long-term localization and mapping can be found in the Section \textit{3 Methodology} of the Appendix~\ref{ap:slr}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{literature/selection_20220517.pdf}
+  \caption[Preferred Reporting Items for Systematic reviews and Meta-Analysis (PRISMA) flow diagram for the selection process of the systematic review on long-term localization and mapping.]{\glsfirst{PRISMA}~\cite{methodology:prisma} flow diagram for the selection process of the systematic review on long-term localization and mapping. Date of the last full inquiry: May 17, 2022.}
+  \label{fig:prisma-flow}
+\end{figure}
+
+
+
+
+\subsection{Results overview}
+
+The relevance of the long-term localization and mapping topic can be evaluated by the evolution of the number of publications. Figure~\ref{fig:year-analysis} presents this evolution using the Title, Abstract, and Keywords (authors and indexed ones) as search fields when inquiring in three different bibliographic databases: INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}.
+Even though the inquiry only represents the identification phase of the selection process in a systematic review (i.e., applying the search strategy to all data sources), still, the search results allow having a perception of published works related to the long-term \gls{SLAM} and the interest of the scientific community in the topic.
+In Figure~\ref{fig:year-analysis:original}, the search string used for the inquiry is the same one used in the systematic review: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}. This string does not focus on any particular challenge related to long-term localization and mapping.
+In contrast, Figure~\ref{fig:year-analysis:dynamic} presents the evolution of the number of publications reducing the scope of the search results to the challenge of localization and mapping in dynamic environments, the same one directly related to the goals of this research proposal. This scope reduction is accomplished by using the following search string: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong) AND (dynamic* OR mov*)}. The part of the query added to the original one (\texttt{dynamic* OR mov*}) intends to limit the search results to works related to dealing with dynamic or moving elements in the scene.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/literature-year_original_20221025.png}%
+  \label{fig:year-analysis:original}}
+  \hfill
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/literature-year_dynamic_20221025.png}%
+  \label{fig:year-analysis:dynamic}}
+  \caption[Evolution of published records per year in the INSPEC, Scopus, and Web of Science databases on long-term localization and mapping.]{Evolution of published records per year in the INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos} databases on long-term localization and mapping: (a) \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}; (b) \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong) AND (dynamic* OR mov*)}. Date of the last full inquiry: October 25, 2022.}
+  \label{fig:year-analysis}
+\end{figure}
+
+When analyzing Figure~\ref{fig:year-analysis}, firstly, the graph in Figure~\ref{fig:year-analysis:original} shows an increasing interest of the scientific community in the topic of long-term localization and mapping. Since 2009, the number of publications are predominantly more than 10 per year. From that year onwards, the graph has an almost linear tendency reaching a maximum of 74, 76, and 62 published records on the years of 2019, 2021, and 2021 respective to the databases INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}, respectively.
+The tendency shows that long-term \gls{SLAM} is gaining relevance throughout the years, supporting the importance and relevance of the topic for the scientific community. This result is in conformity to the analysis of the year of publication presented in the systematic review for the 142 literature works included in the paper (see Section \textit{4 Results Overview} of the Appendix~\ref{ap:slr}).
+Similarly, the graph shown in Figure~\ref{fig:year-analysis:dynamic} indicates a growing interest in the topic of this research proposal, i.e., long-term localization and mapping in dynamic environments. The topic also seems to have gained relevance from 2009 onwards, achieving a maximum of 21, 25, and 17 published works in 2021 respective to the databases INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}, respectively.
+Although the number of publications related to dynamic environments (Figure~\ref{fig:year-analysis:dynamic}) is lower than the ones associated with long-term \gls{SLAM} (Figure~\ref{fig:year-analysis:original}), the growing interest in solving the challenges of performing localization and mapping in dynamic environments demonstrates the relevance of this research proposal.
+
+
+
 
 
 
 \section{Simultaneous Localization and Mapping (SLAM)}\label{sec:slam}
 
+Overview the SLAM problem
 
 
-\section{Long-term SLAM}\label{sec:long-term-slam}
+
+
+\subsection{Problem introduction}\label{sec:slam:intro}
+
+Introduce / formulate the SLAM problem.
 
 
 
-\section{Summary}\label{sec:summary:literature}
+
+\subsection{FastSLAM}\label{sec:slam:rbpf}
+
+Rao Blackwellized Particle Filter (RBPF). Grid-based SLAM.
+
+
+
+
+\subsection{GraphSLAM}\label{sec:slam:graph}
+
+Graph-based SLAM.
+
+
+
+
+
+
+\section{Long-term SLAM in dynamic environments}\label{sec:slam-dynamic}
+
+Direct the discussing to the problem of dynamic environments
+
+
+
+
+\subsection{Map representation}\label{sec:slam-dynamic:map}
+
+STM, LTM.
+
+
+
+
+\subsection{Map matching}\label{sec:slam-dynamic:matching}
+
+Ray tracing.
+
+NDT.
+
+
+
+
+\subsection{Dynamic objects detection}\label{sec:slam-dynamic:obj-detect}
+
+YOLO.
+
+Geometric constraints.
+
+
+
+
+\subsection{Prediction modeling}\label{sec:slam-dynamic:predict}
+
+Markov models.
+
+FFT. ARMA. (periodic, aperiodic / periodic changes, respectively).
+
+
+
+
+
+
+\section{Conclusions}\label{sec:literature:conclusions}
 
 
