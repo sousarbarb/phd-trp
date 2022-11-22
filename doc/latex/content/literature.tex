@@ -87,28 +87,173 @@ Although the number of publications related to dynamic environments (Figure~\ref
 
 \section{Simultaneous Localization and Mapping (SLAM)}\label{sec:slam}
 
-Overview the SLAM problem
+Next, this section focuses on defining the \gls{SLAM} problem and discussing the three main techniques for \gls{SLAM}: map matching, particle filter, and pose graph. Given the focus of this thesis research plan on maintaining an up-to-date representation of the environment when operating \glspl{AMR} in dynamic surroundings, the algorithms to be developed should not only localize the robot in the current map but also update the latter accordingly to the dynamics of the scene elements. Thus, the problem of long-term localization and mapping in dynamic environments is intrinsically related to \gls{SLAM}.
 
 
 
 
 \subsection{Problem introduction}\label{sec:slam:intro}
 
-Introduce / formulate the SLAM problem.
+\gls{SLAM} is one of the most fundamental problems in robotics. This problem, also previously known as \gls{CML} in the literature, may be formulated by the Definition~\ref{def:slam}.
+When the robot does not have access to a representation of the environment nor know its pose, \gls{SLAM} enables an \gls{AMR} to build a map of its surroundings while simultaneously localizing itself relative to this map. \gls{SLAM} may also be utilized for building the map used in applications assuming a static scene, even if the map is only continuously updated upon the mapping process~\cite{book:probabilistic-robotics}.
+
+\begin{definition}[{\cite[p.~349]{book:intro-robotics}}]\label{def:slam}
+``...the robot must not only create a map, but it must
+also do this while moving and localizing to explore the environment. In the robotics community, this is often called the \glsfirst{SLAM} problem.''
+\end{definition}
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/slam-online.pdf}%
+  \label{fig:slam:online}}
+  \hfill
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/slam-full.pdf}%
+  \label{fig:slam:full}}
+  \caption[Graphical model of the Simultaneous Localization and Mapping (SLAM) problem: (a) online SLAM; (b) full SLAM.]{Graphical model of the \glsfirst{SLAM} problem: (a) online SLAM; (b) full SLAM~\cite{book:probabilistic-robotics}.}
+  \label{fig:slam}
+\end{figure}
+
+Two main formulations define \gls{SLAM} from a probabilistic perspective, also illustrated graphically in Figure~\ref{fig:slam}.
+The first represented in Figure~\ref{fig:slam:online} is online \gls{SLAM}, where the algorithm estimates the posterior over the momentary pose ($x_t$ at a time instant $t$) along with the map ($m$), as defined in Equation~\ref{eq:slam:online}, provided the sensor measurements ($z_{1:t}$) and the control variables ($u_{1:t}$). The online term is due to only involving the estimation of variables that persist at the current time instant $t$. Several algorithms incrementally implement online \gls{SLAM}, i.e., discarding past measurements and controls once they have been processed. The other probabilistic formulation is called full \gls{SLAM} and illustrated in Figure~\ref{fig:slam:full}, given the goal to compute a posterior over the entire path ($x_{1:t}$) along with the map, as formulated in Equation~\ref{eq:slam:full}, instead of just the current pose ($x_t$). The difference between online and full \gls{SLAM} is that the former results in an integration of the past poses from the full \gls{SLAM} problem~\cite{book:probabilistic-robotics}.
+
+\begin{equation}\label{eq:slam:online}
+p\left(x_t,m \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:slam:full}
+p\left(x_{1:t},m \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+In the case of the algorithm also estimating correspondences between measurements and map landmarks, the explicit inclusion of the correspondence variables ($c_t$ or $c_{1:t}$) in the estimation problem may be useful for reasoning if the perceived feature is the same one as previously detected and already represented in the map or if it is a new landmark.
+Consequently, Equations~\ref{eq:slam:online:with-association} and \ref{eq:slam:full:with-association} formulate the posterior estimation for online and full \gls{SLAM}, respectively~\cite{book:probabilistic-robotics}.
+
+\begin{equation}\label{eq:slam:online:with-association}
+p\left(x_t,m,c_t \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:slam:full:with-association}
+p\left(x_{1:t},m,c_{1:t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+Although computing a full posterior captures all the information to be known about the map and the pose or the path, this estimation is practically unfeasible due to the high dimensionality of the continuous parameter space and the large number of discrete correspondence variables~\cite{book:probabilistic-robotics}.
+So, next, the discussion on scan matching, particle filter, and pose graph implementations of \gls{SLAM} focuses on the practical aspects of performing continuous localization and mapping.
 
 
 
 
-\subsection{FastSLAM}\label{sec:slam:rbpf}
+\subsection{Scan matching}\label{sec:slam:matching}
 
-Rao Blackwellized Particle Filter (RBPF). Grid-based SLAM.
+A basic approach for solving the \gls{SLAM} problem is continuously matching the sensor scans to the map learned until the current instant.
+An example is the HectorSLAM~\cite{slam:scan-match:hector} algorithm, where the block diagram describing that system is shown in Figure~\ref{fig:hector-slam}. This algorithm is considered to be online \gls{SLAM} due to only estimating the current pose and the map. Also, the method integrates incrementally the sensor readings to allow discarding those in subsequent iterations.
+Furthermore, HectorSLAM~\cite{slam:scan-match:hector} aligns the beam endpoints of a 2D \gls{LiDAR} with the current map using a matcher, e.g., PerfectMatch~\cite{matcher:perfect-match}, \gls{ICP}~\cite{matcher:icp}, \gls{NICP}~\cite{matcher:nicp}, \gls{NDT}~\cite{matcher:ndt}, or other matchers. This alignment estimates the homogeneous transformation between the sensor scan and the map for updating the map with the latest scan and also update the current estimation of the robot pose.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.65\textwidth]{literature/slam-hector.pdf}
+  \caption[Block diagram of the mapping and navigation systems of Hector SLAM.]{Block diagram of the mapping and navigation systems of Hector \gls{SLAM}. Dashed lines represent optional information~\cite{slam:scan-match:hector}.}
+  \label{fig:hector-slam}
+\end{figure}
+
+The main advantage of scan matching \gls{SLAM} algorithms is the lower use of computational resources compared to more complex approaches. These algorithms do not require an exhaustive pose search or data association search with previous scans (the matching with all preceding scans is implicit in matching the current one with the map)~\cite{slam:scan-match:hector}.
+However, as in the case of HectorSLAM~\cite{slam:scan-match:hector}, a pure scan matching approach does not implement loop closure (see Definition~\ref{def:loop-closure}). This limitation does not allow correcting the map when recognizing a previously mapped place, not having the consequent reduction in the uncertainty of the map estimate.
+
+\begin{definition}[{\cite[p.~188]{book:intro-robotics}}]\label{def:loop-closure}
+``The problem of location recognition is also called loop-detection, because a loop is a closed trajectory of a vehicle that returns to a previously-visited point.
+The problem of minimizing the error at the loop closure is instead called loop-closing.''
+\end{definition}
 
 
 
 
-\subsection{GraphSLAM}\label{sec:slam:graph}
+\subsection{Particle filter}\label{sec:slam:pf}
 
-Graph-based SLAM.
+The graphical model of the \gls{SLAM} problem shown in Figure~\ref{fig:slam} is equivalent to a discrete \gls{DBN} (see Definition~\ref{def:dbn}). A sampling-based inference algorithm for \glspl{DBN} is the particle filter. However, these filters suffer from the problem of dimensionality scaling exponentially~\cite{slam:pf:rbpf}.
+The assumption of conditional independence between map measurements allows using \glspl{RBPF} for \gls{SLAM}. These filters use particles to represent the posterior over some variables and Gaussians (or other parametric probabilistic distribution functions) to represent all other variables~\cite{book:probabilistic-robotics}.
+This marginalization of some variables implemented by \glspl{RBPF} improves the computational efficiency compared to standard particle filters, reducing the space size for the sampling step~\cite{slam:pf:rbpf}.
+
+\begin{definition}[{\cite{slam:graph:tutorial}}]\label{def:dbn}
+``A convenient way to describe this structure is via the \glsfirst{DBN}... A Bayesian network is a graphical model that describes a stochastic process as a directed graph. The graph has one node for each random variable in the process, and a directed edge (or arrow) between two nodes models a conditional dependence between them''
+\end{definition}
+
+An example of a \gls{RBPF}-based \gls{SLAM} is FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}. This algorithm decomposes the \gls{SLAM} problem into a robot localization one and the estimation of map landmarks conditioned on the robot pose estimate. Figure~\ref{fig:fastslam} represents the composition of particles implemented in FastSLAM. Each particle $k$ contains an estimate of the robot path ($x_{1:t}^{\left[N\right]}$) until the current time instant $t$ and a set of \glspl{EKF} with a mean ($\mu_j^{\left[k\right]}$) and covariance ($\sum_j^{\left[k\right]}$) of the estimation, one for each feature $j=1..N$ represented in the map $m$.
+The basic steps of the FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} algorithm are the following ones~\cite{book:probabilistic-robotics}:
+
+\begin{itemize}[nosep]
+\item for each particle $k=1..M$:
+  \begin{enumerate}[nosep]
+  \item \textbf{retrieval:} retrieve a pose $x_{t-1}^{\left[k\right]}$ from the particle set;
+  \item \textbf{prediction:} sample a new pose $x_{t}^{\left[k\right]} \sim p\left(x_t \;\vert\; x_{t-1}^{\left[k\right]},u_t\right)$ using the probabilistic motion model of the robot (the improved version, FastSLAM~2.0~\cite{slam:pf:fastslam-2.0}, incorporates also the sensor measurements $z_t^i$ in this step);
+  \item \textbf{measurement update:} for each observed feature obtained from a measurement $z_t^i$, identify the correspondence $j$ in the particle map, and incorporate $z_t^i$ into the corresponding \gls{EKF}, updating the mean ($\mu_j^{\left[k\right]}$) and covariance ($\sum_j^{\left[k\right]}$) of the corresponding map feature accordingly;
+  \item \textbf{importance weight:} compute the importance weight $w^{\left[k\right]}$ for the new particle.
+  \end{enumerate}
+\item \textbf{resampling:} sample, with replacement, the $M$ particles, where the probability of sampling being proportional to $w^{\left[k\right]}$, to incorporate the measurements $z_t^i$ into the robot pose $x_{t}^{\left[k\right]}$ (due to only considering the most recent control $u_t$ in the previous steps, only in FastSLAM~1.0~\cite{slam:pf:fastslam-1.0}).
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{literature/slam-pf.pdf}
+  \caption[Composition of particles in FastSLAM in terms of path estimate and the set of estimators and associated covariances for individual feature locations.]{Composition of particles in FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} in terms of path estimate and the set of estimators and associated covariances for individual feature locations~\cite{book:probabilistic-robotics}.}
+  \label{fig:fastslam}
+\end{figure}
+
+The adaptation of FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} to occupancy grid-based \gls{SLAM} is implemented by the GMapping~\cite{slam:pf:gmapping} algorithm. This adaptation requires the modification of three modules relative to FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}.
+First, GMapping~\cite{slam:pf:gmapping} considers the occupancy grid as the map representation for the \gls{SLAM} problem, where each particle contains a grid map.
+Next, the computation of a measurement likelihood ($p\left(z_t \;\vert\; x_{t}^{\left[k\right]}, m_{t-1}^{\left[k\right]}\right)$) uses the beam endpoint sensor model, characteristic of range-bearing sensors such as 2D lasers, instead of integrating the measures into an \gls{EKF} as in FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}. This model considers the individual scan beams independent from each other, using the distance between the beam endpoint and the closest obstacle in the map to that point to compute the beam's individual likelihood.
+Lastly, the update of each particle's map ($p\left(m_t^{\left[k\right]} \;\vert\; z_t x_{t}^{\left[k\right]}, m_{t-1}^{\left[k\right]}\right)$)  computes a new occupancy grid map. This update estimates the probability of each individual cell, assuming the independence of each other, using a binary Bayes filter and the inverse model of the sensor measurements~\cite{book:probabilistic-robotics}.
+
+A key advantage of particle filter-based \gls{SLAM} is the decisions on data associations being made on a per-particle basis, instead of the most likely one as in scan matching or \gls{EKF} approaches. This characteristic represents inherently multi-hypotheses associations in the filter, making it more robust to data association problems.
+Another advantage is particle filters being capable to model non-linear robot motions without requiring model approximations.
+However, a disadvantage of particle filters is relative to loop closure detection. Even though these filters are able to detect previously visited places, unlike scan matching approaches such as HectorSLAM~\cite{slam:scan-match:hector}, this place recognition ability is only maintained through the diversity in the particle sets, possibly maintaining larger sets and requiring more computational resourcers~\cite{book:probabilistic-robotics}.
+
+
+
+
+\subsection{Pose graph}\label{sec:slam:graph}
+
+Another solution for the \gls{SLAM} problem leveraging its graphical model (illustrated in Figure~\ref{fig:slam}) is pose graph \gls{SLAM}, also known as GraphSLAM. This optimization-based solution consists of two subsystems, as in filter-based approaches such as particle filters and \gls{EKF}.
+In filter-based \gls{SLAM}, the filters implement a prediction stage usually based on the vehicle's motion model, and then, the correction phase updates the predicted state by matching the sensor observation to the map.
+As for optimization-based solutions such as the posse graph formulation, a first module also known as the front-end is responsible to identify constraints of the problem based on sensor data by finding correspondences between new observations and the current map. Then, a second subsystem known as the back-end computes  or refines the poses of the graph and the map minimizing the coherence errors as a whole. This second module usually requires optimization algorithms such as Gauss-Newton or Levenberg-Marquardt for minimizing the objective function~\cite{review:bresson:2017}. However, there are available in the literature optimization more specific for the pose graph formulation, e.g., \gls{TORO}~\cite{slam:graph:toro}, \gls{iSAM}~\cite{slam:graph:isam,slam:graph:isam2}, or $g^2o$~\cite{slam:graph:g2o}.
+
+Furthermore, the edge connection in GraphSLAM between vertexes $x_i$ and $x_j$ is illustrated in Figure~\ref{fig:graph-slam}.
+Considering $z_{ij}$ as a virtual measurement obtained from raw sensor data between those two vertexes, let $z_{ij}$ and $\Omega_{ij}$ be the mean and the information matrix of the virtual data, respectively. This virtual measurement actually represents the transformation that maximizes the overlap between the observations acquired from the pose nodes $i$ and $j$.
+The log-likelihood $l_{ij}$ (see Definition~\ref{def:log-likelihood}) of the measurement $z_{ij}$ can be defined as in Equation~\ref{eq:slam:graph:log-like}, where $\hat{z}_{ij}\left(x_i,x_j\right)$ is the prediction of the virtual measurement given the configuration of the nodes $x_i$ and $x_j$.
+Then, the configuration of nodes $x^*=\left(x_1,\dots,x_T\right)^T$ can be found formulating a maximum likelihood problem that minimizes the negative log-likelihood function $F\left(x\right)$ (see Equation~\ref{eq:slam:graph:function}) of all the observations, seeking to solve the Equation~\ref{eq:slam:graph:solution}~\cite{slam:graph:tutorial}.
+For exemplification purposes, two possible examples of virtual measurements are wheeled odometry and 2D laser scan matching data. Both cases would define the prediction of the measurement as $\hat{z}_{ij}=x_j-x_i$.
+The virtual measurement would be $z_{ij}=x_j - g\left(x_i,u_{ij}\right)$ for wheeled odometry, where $g\left(x_i,u_{ij}\right)$ represents the odometry estimation of $x_j$ starting from $x_i$, while using the wheeled odometry data $u_{ij}$ between those two nodes.
+As for the scan matching case, the measurement would be $z_{ij}=h\left(z_i,z_j\right)$ representing the matching between the laser scans $z_i$ and $z_j$ acquired from the nodes $x_i$ and $x_j$, respectively.
+
+\begin{definition}[{\cite[p.~224]{book:math-statistics}}]\label{def:log-likelihood}
+``...since the natural logarithm is a one-to-one function on $\mathbb{R}^+$, no information about $\theta$ is lost when the log-likelihood function $l\left(\theta\right)=\ln\left[p\left(\theta\right)\right]$ is used in place of $p\left(\theta\right)$.
+Moreover, for many probability models, it is easier to work with the log-likelihood function than with the likelihood function...''
+\end{definition}
+
+\begin{equation}\label{eq:slam:graph:log-like}
+l_{ij} \propto \left[z_{ij}-\hat{z}_{ij}\left(x_i,x_j\right)\right]^T \Omega_{ij} \left[z_{ij}-\hat{z}_{ij}\left(x_i,x_j\right)\right]
+\end{equation}
+
+\begin{equation}\label{eq:slam:graph:function}
+F\left(x\right) = \sum_{i,j} e_{ij}^T \Omega_{ij} e_{ij}
+\end{equation}
+
+\begin{equation}\label{eq:slam:graph:solution}
+x^* = \argmin_x F\left(x\right)
+\end{equation}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.45\textwidth]{literature/slam-graph.pdf}
+  \caption[Edge connection in the graph formulation of the SLAM problem between vertexes $x_i$ and $x_j$ originated from a measurement $z_{ij}$.]{Edge connection in the graph formulation of the SLAM problem between vertexes $x_i$ and $x_j$ originated from a measurement $z_{ij}$~\cite{slam:graph:tutorial}.}
+  \label{fig:graph-slam}
+\end{figure}
+
+A pose graph \gls{SLAM} implementation is the \gls{SLAM} Toolbox framework~\cite{slam:graph:slam-toolbox}, also available in the official navigation stack of the \gls{ROS}~\cite{ros,ros2} (version ROS2).
+This toolbox is intended for 2D \gls{SLAM} using a 2D laser scanner in conjunction with wheeled odometry obtained from the wheel encoders of the robot's motors.
+The optimization framework used for the pose graph back-end is the Ceres Solver~\cite{ceres}.
+Although \gls{SLAM} Toolbox~\cite{slam:graph:slam-toolbox} states having lifelong mapping capabilities, these are only relative to being able to update existing maps and serialize the data for use in other mapping sessions, not for dynamic environments or appearance invariance.
+
+Overall, a key difference between pose graph \gls{SLAM} compared to other solutions for the \gls{SLAM} problem, such as filter and scan matching approaches, is that the former has access to the full data when building the map, being able to apply improved linearization and data association techniques. Indeed, in GraphSLAM, all data can be used to linearize and calculate correspondences, i.e., can revise past data association and linearize more than once~\cite{book:probabilistic-robotics}.
+This key difference is pointed as a possible reason to graph \gls{SLAM} tending to give better results than filters, where the latter is more subject to linearization issues~\cite{review:bresson:2017}.
+However, the pose graph formulation shows a linear growth over time in the graph's size requiring techniques for constraining the graph size (see Section~\ref{sec:context}), and thus, limit the computational resources required for continuously performing GraphSLAM~\cite{book:probabilistic-robotics}.
 
 
 

@@ -1,6 +1,12 @@
 \newcommand{\Feup}{Faculdade de Engenharia da Universidade do Porto}
-\newcommand{\doinote}[1]{DOI: \href{https://doi.org/#1}{#1}}
+\newcommand{\doi}[1]{\href{https://doi.org/#1}{#1}}
+\newcommand{\doinote}[1]{DOI: \doi{#1}}
 \renewcommand{\glsnamefont}[1]{\textbf{#1}}
 \newcommand{\etal}{\textit{et.~al.}}
 \newcommand{\ie}{\textit{i.e.}}
 \newcommand{\eg}{\textit{e.g.}}
+
+\newtheorem{definition}{Definition}[section]
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
