@@ -1,19 +1,405 @@
 \chapter{Literature Review}\label{chap:literature}
 
+The preprint of a systematic literature review on long-term localization and mapping following the \gls{PRISMA}~\cite{methodology:prisma} guidelines is available in Appendix~\ref{ap:slr} of this document.
+The study precedes the elaboration of this thesis research plan and includes an analysis of 142 literature works for discussing and analyzing methodologies focused on appearance invariance, dynamic elements, map sparsification and multi-session techniques, and other computational concerns.
+Additionally, the study discusses commonly used public datasets and the characteristics of the experimental data used by the authors of the included works in the review while presenting the most used evaluation metrics.
+However, given the main scope of this research work on lifelong \gls{SLAM} in dynamic environments, this chapter focus mainly on the discussion of localization and mapping algorithms in scenes with dynamic elements presented in the systematic review. This chapter also formulates the \gls{SLAM} problem and its most common solutions.
+
+Hence, this chapter is divided into four sections.
+Section~\ref{sec:literature-overview} summarizes the methodology of the systematic review (further detail available in Appendix~\ref{ap:slr}) on long-term localization and mapping and overviews the included literature works in terms of publication year with an emphasis on \gls{SLAM} in dynamic environments.
+Section~\ref{sec:slam} formulates the traditional \gls{SLAM} problem and presents its three most common solutions: map matching, particle filter, and pose graph implementations.
+Then, Section~\ref{sec:slam-dynamic} discusses literature works related to long-term \gls{SLAM} in dynamic environments based on the findings presented in Appendix~\ref{ap:slr}.
 
 
-\section{Research Methodology}\label{sec:research-method:literature}
+
+
+
+
+\section{Literature overview}\label{sec:literature-overview}
+
+\subsection{Review methodology}
+
+The literature review is an important process in any research project for providing a comprehensive summary of previous research on a specific topic.
+This process aims to identify the main contributions, research gaps, define current challenges and future directions in the scope of a research topic.
+However, the review methodology should be supported on relevant and rigorous frameworks for synthesizing the findings of the literature works.
+
+A systematic literature review uses explicit, rigorous, and reproducible systematic methods to synthesize the findings of works related to a particular research question, topic area, or phenomenon of interest.
+This type of review assures the quality and trustworthiness of the review's findings by presenting a complete, organized, and summarized analysis of all works considered while allowing other researchers to replicate or update the review.
+The most common standard for performing systematic reviews is the \gls{PRISMA}~\cite{methodology:prisma} statement. Even though the \gls{PRISMA}~\cite{methodology:prisma} guidelines have been designed originally for evaluating the effects of health interventions, the checklist items of the methodology are general and applicable to other subject areas.
+Therefore, the literature covered in this chapter and extensively discussed in Appendix~\ref{ap:slr} follow a systematic methodology based on the \gls{PRISMA}~\cite{methodology:prisma} guidelines. This methodology is composed by the following steps:
+
+\begin{enumerate}[nosep]
+\item definition of eligibility criteria;
+\item conceptualization of the search strategy;
+\item selection process:
+  \begin{enumerate}[nosep]
+  \item identification;
+  \item screening;
+  \item quality assessment.
+  \end{enumerate}
+\item data extraction;
+\item synthesis and analysis of the included works.
+\end{enumerate}
+
+The first step defines the eligibility criteria to determine the eligible studies for the selection process. In the systematic review on long-term localization and mapping, the criteria considered are mostly related with the type of paper -- indexation in scientific venues, subject area, reject short papers and gray, secondary, and tertiary literature, exclude dataset papers -- and availability -- full-text accessibility and language. Additionally, a coverage (exclude odometry-only approaches) and scope (not consider different or non related subjects) criteria are exclusion criteria focused on the scientific contributions of the works.
+Next, the search strategy conceptualization defines as data sources the databases ACM Digital Library~\cite{literature:db:acm}, Dimensions~\cite{literature:db:dim}, IEEE Xplore~\cite{literature:db:ieee}, INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}. The date of the last full inquiry in the systematic review was May 17, 2022. However, for the discussion of long-term \gls{SLAM} in dynamic environment in Section~\ref{sec:slam-dynamic}, recent works between the previous data until October 25, 2022, will be included for the analysis. As for the base string used to inquiring the data sources considering the title, abstract, and keywords search fields is the following one: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}.
+The selection process starts by identifying the records in the different sources using the previous base string, possibly rejecting duplicate records (Parsifal~\cite{methodology:parsifal} was the tool used for identifying duplicates) and also based on the eligibility criteria defined previously. The screening phase also excludes works based on the eligibility criteria by reading the title and abstract of the publications. Then, the quality assessment establishes another set of criteria focused on the scientific contribution of the eligible records. The assessment of eligible records rejects works based on works with no compliance in certain criteria (\eg, non detailed methodology or results sections, and works not having long-term experiments or not considering localization nor mapping problems).
+Finally, the data extraction process allows the retrieval of information for the synthesis and analysis of the included works while also rejecting articles with extended versions to improve the discussion and singularity of the methodologies proposed in the literature.
+Figure 6 illustrates the \gls{PRISMA}~\cite{methodology:prisma} flow diagram for summarizing the selection process. Further details on the systematic methodology followed for synthesizing and analysis literature works on long-term localization and mapping can be found in the Section \textit{3 Methodology} of the Appendix~\ref{ap:slr}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{literature/selection_20220517.pdf}
+  \caption[Preferred Reporting Items for Systematic reviews and Meta-Analysis (PRISMA) flow diagram for the selection process of the systematic review on long-term localization and mapping.]{\glsfirst{PRISMA}~\cite{methodology:prisma} flow diagram for the selection process of the systematic review on long-term localization and mapping. Date of the last full inquiry: May 17, 2022.}
+  \label{fig:prisma-flow}
+\end{figure}
+
+
+
+
+\subsection{Results overview}
+
+The relevance of the long-term localization and mapping topic can be evaluated by the evolution of the number of publications. Figure~\ref{fig:year-analysis} presents this evolution using the Title, Abstract, and Keywords (authors and indexed ones) as search fields when inquiring in three different bibliographic databases: INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}.
+Even though the inquiry only represents the identification phase of the selection process in a systematic review (\ie, applying the search strategy to all data sources), still, the search results allow having a perception of published works related to the long-term \gls{SLAM} and the interest of the scientific community in the topic.
+In Figure~\ref{fig:year-analysis:original}, the search string used for the inquiry is the same one used in the systematic review: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}. This string does not focus on any particular challenge related to long-term localization and mapping.
+In contrast, Figure~\ref{fig:year-analysis:dynamic} presents the evolution of the number of publications reducing the scope of the search results to the challenge of localization and mapping in dynamic environments, the same one directly related to the goals of this research proposal. This scope reduction is accomplished by using the following search string: \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong) AND (dynamic* OR mov*)}. The part of the query added to the original one (\texttt{dynamic* OR mov*}) intends to limit the search results to works related to dealing with dynamic or moving elements in the scene.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/literature-year_original_20221025.png}%
+  \label{fig:year-analysis:original}}
+  \hfill
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/literature-year_dynamic_20221025.png}%
+  \label{fig:year-analysis:dynamic}}
+  \caption[Evolution of published records per year in the INSPEC, Scopus, and Web of Science databases on long-term localization and mapping.]{Evolution of published records per year in the INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos} databases on long-term localization and mapping: (a) \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong)}; (b) \texttt{(robot* OR vehicle*) AND ((locali* AND map*) OR "slam") AND ("long term" OR "life long" OR lifelong) AND (dynamic* OR mov*)}. Date of the last full inquiry: October 25, 2022.}
+  \label{fig:year-analysis}
+\end{figure}
+
+When analyzing Figure~\ref{fig:year-analysis}, firstly, the graph in Figure~\ref{fig:year-analysis:original} shows an increasing interest of the scientific community in the topic of long-term localization and mapping. Since 2009, the number of publications are predominantly more than 10 per year. From that year onwards, the graph has an almost linear tendency reaching a maximum of 74, 76, and 62 published records on the years of 2019, 2021, and 2021 respective to the databases INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}, respectively.
+The tendency shows that long-term \gls{SLAM} is gaining relevance throughout the years, supporting the importance and relevance of the topic for the scientific community. This result is in conformity to the analysis of the year of publication presented in the systematic review for the 142 literature works included in the paper (see Section \textit{4 Results Overview} of the Appendix~\ref{ap:slr}).
+Similarly, the graph shown in Figure~\ref{fig:year-analysis:dynamic} indicates a growing interest in the topic of this research proposal, \ie, long-term localization and mapping in dynamic environments. The topic also seems to have gained relevance from 2009 onwards, achieving a maximum of 21, 25, and 17 published works in 2021 respective to the databases INSPEC~\cite{literature:db:insp}, Scopus~\cite{literature:db:scopus}, and Web of Science~\cite{literature:db:wos}, respectively.
+Although the number of publications related to dynamic environments (Figure~\ref{fig:year-analysis:dynamic}) is lower than the ones associated with long-term \gls{SLAM} (Figure~\ref{fig:year-analysis:original}), the growing interest in solving the challenges of performing localization and mapping in dynamic environments demonstrates the relevance of this research proposal.
+
+
+
 
 
 
 \section{Simultaneous Localization and Mapping (SLAM)}\label{sec:slam}
 
+Next, this section focuses on defining the \gls{SLAM} problem and discussing the three main techniques for \gls{SLAM}: map matching, particle filter, and pose graph. Given the focus of this thesis research plan on maintaining an up-to-date representation of the environment when operating \glspl{AMR} in dynamic surroundings, the algorithms to be developed should not only localize the robot in the current map but also update the latter accordingly to the dynamics of the scene elements. Thus, the problem of long-term localization and mapping in dynamic environments is intrinsically related to \gls{SLAM}.
 
 
-\section{Long-term SLAM}\label{sec:long-term-slam}
+
+
+\subsection{Problem introduction}\label{sec:slam:intro}
+
+\gls{SLAM} is one of the most fundamental problems in robotics. This problem, also previously known as \gls{CML} in the literature, may be formulated by the Definition~\ref{def:slam}.
+When the robot does not have access to a representation of the environment nor know its pose, \gls{SLAM} enables an \gls{AMR} to build a map of its surroundings while simultaneously localizing itself relative to this map. \gls{SLAM} may also be utilized for building the map used in applications assuming a static scene, even if the map is only continuously updated upon the mapping process~\cite{book:probabilistic-robotics}.
+
+\begin{definition}[{\cite[p.~349]{book:intro-robotics}}]\label{def:slam}
+``...the robot must not only create a map, but it must
+also do this while moving and localizing to explore the environment. In the robotics community, this is often called the \glsfirst{SLAM} problem.''
+\end{definition}
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/slam-online.pdf}%
+  \label{fig:slam:online}}
+  \hfill
+  \subfloat[][]{\includegraphics[width=0.495\textwidth]{literature/slam-full.pdf}%
+  \label{fig:slam:full}}
+  \caption[Graphical model of the Simultaneous Localization and Mapping (SLAM) problem: (a) online SLAM; (b) full SLAM.]{Graphical model of the \glsfirst{SLAM} problem: (a) online SLAM; (b) full SLAM~\cite{book:probabilistic-robotics}.}
+  \label{fig:slam}
+\end{figure}
+
+Two main formulations define \gls{SLAM} from a probabilistic perspective, also illustrated graphically in Figure~\ref{fig:slam}.
+The first represented in Figure~\ref{fig:slam:online} is online \gls{SLAM}, where the algorithm estimates the posterior over the momentary pose ($x_t$ at a time instant $t$) along with the map ($m$), as defined in Equation~\ref{eq:slam:online}, provided the sensor measurements ($z_{1:t}$) and the control variables ($u_{1:t}$). The online term is due to only involving the estimation of variables that persist at the current time instant $t$. Several algorithms incrementally implement online \gls{SLAM}, \ie, discarding past measurements and controls once they have been processed. The other probabilistic formulation is called full \gls{SLAM} and illustrated in Figure~\ref{fig:slam:full}, given the goal to compute a posterior over the entire path ($x_{1:t}$) along with the map, as formulated in Equation~\ref{eq:slam:full}, instead of just the current pose ($x_t$). The difference between online and full \gls{SLAM} is that the former results in an integration of the past poses from the full \gls{SLAM} problem~\cite{book:probabilistic-robotics}.
+
+\begin{equation}\label{eq:slam:online}
+p\left(x_t,m \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:slam:full}
+p\left(x_{1:t},m \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+In the case of the algorithm also estimating correspondences between measurements and map landmarks, the explicit inclusion of the correspondence variables ($c_t$ or $c_{1:t}$) in the estimation problem may be useful for reasoning if the perceived feature is the same one as previously detected and already represented in the map or if it is a new landmark.
+Consequently, Equations~\ref{eq:slam:online:with-association} and \ref{eq:slam:full:with-association} formulate the posterior estimation for online and full \gls{SLAM}, respectively~\cite{book:probabilistic-robotics}.
+
+\begin{equation}\label{eq:slam:online:with-association}
+p\left(x_t,m,c_t \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:slam:full:with-association}
+p\left(x_{1:t},m,c_{1:t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+Although computing a full posterior captures all the information to be known about the map and the pose or the path, this estimation is practically unfeasible due to the high dimensionality of the continuous parameter space and the large number of discrete correspondence variables~\cite{book:probabilistic-robotics}.
+So, next, the discussion on scan matching, particle filter, and pose graph implementations of \gls{SLAM} focuses on the practical aspects of performing continuous localization and mapping.
 
 
 
-\section{Summary}\label{sec:summary:literature}
+
+\subsection{Scan matching}\label{sec:slam:matching}
+
+A basic approach for solving the \gls{SLAM} problem is continuously matching the sensor scans to the map learned until the current instant.
+An example is the HectorSLAM~\cite{slam:scan-match:hector} algorithm, where the block diagram describing that system is shown in Figure~\ref{fig:hector-slam}. This algorithm is considered to be online \gls{SLAM} due to only estimating the current pose and the map. Also, the method integrates incrementally the sensor readings to allow discarding those in subsequent iterations.
+Furthermore, HectorSLAM~\cite{slam:scan-match:hector} aligns the beam endpoints of a 2D \gls{LiDAR} with the current map using a matcher, \eg, PerfectMatch~\cite{matcher:perfect-match}, \gls{ICP}~\cite{matcher:icp}, \gls{NICP}~\cite{matcher:nicp}, \gls{NDT}~\cite{matcher:ndt}, or other matchers. This alignment estimates the homogeneous transformation between the sensor scan and the map for updating the map with the latest scan and also update the current estimation of the robot pose.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.65\textwidth]{literature/slam-hector.pdf}
+  \caption[Block diagram of the mapping and navigation systems of Hector SLAM.]{Block diagram of the mapping and navigation systems of Hector \gls{SLAM}. Dashed lines represent optional information~\cite{slam:scan-match:hector}.}
+  \label{fig:hector-slam}
+\end{figure}
+
+The main advantage of scan matching \gls{SLAM} algorithms is the lower use of computational resources compared to more complex approaches. These algorithms do not require an exhaustive pose search or data association search with previous scans (the matching with all preceding scans is implicit in matching the current one with the map)~\cite{slam:scan-match:hector}.
+However, as in the case of HectorSLAM~\cite{slam:scan-match:hector}, a pure scan matching approach does not implement loop closure (see Definition~\ref{def:loop-closure}). This limitation does not allow correcting the map when recognizing a previously mapped place, not having the consequent reduction in the uncertainty of the map estimate.
+
+\begin{definition}[{\cite[p.~188]{book:intro-robotics}}]\label{def:loop-closure}
+``The problem of location recognition is also called loop-detection, because a loop is a closed trajectory of a vehicle that returns to a previously-visited point.
+The problem of minimizing the error at the loop closure is instead called loop-closing.''
+\end{definition}
 
 
+
+
+\subsection{Particle filter}\label{sec:slam:pf}
+
+The graphical model of the \gls{SLAM} problem shown in Figure~\ref{fig:slam} is equivalent to a discrete \gls{DBN} (see Definition~\ref{def:dbn}). A sampling-based inference algorithm for \glspl{DBN} is the particle filter. However, these filters suffer from the problem of dimensionality scaling exponentially~\cite{slam:pf:rbpf}.
+The assumption of conditional independence between map measurements allows using \glspl{RBPF} for \gls{SLAM}. These filters use particles to represent the posterior over some variables and Gaussians (or other parametric probabilistic distribution functions) to represent all other variables~\cite{book:probabilistic-robotics}.
+This marginalization of some variables implemented by \glspl{RBPF} improves the computational efficiency compared to standard particle filters, reducing the space size for the sampling step~\cite{slam:pf:rbpf}.
+
+\begin{definition}[{\cite{slam:graph:tutorial}}]\label{def:dbn}
+``A convenient way to describe this structure is via the \glsfirst{DBN}... A Bayesian network is a graphical model that describes a stochastic process as a directed graph. The graph has one node for each random variable in the process, and a directed edge (or arrow) between two nodes models a conditional dependence between them''
+\end{definition}
+
+An example of a \gls{RBPF}-based \gls{SLAM} is FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}. This algorithm decomposes the \gls{SLAM} problem into a robot localization one and the estimation of map landmarks conditioned on the robot pose estimate. Figure~\ref{fig:fastslam} represents the composition of particles implemented in FastSLAM. Each particle $k$ contains an estimate of the robot path ($x_{1:t}^{\left[N\right]}$) until the current time instant $t$ and a set of \glspl{EKF} with a mean ($\mu_j^{\left[k\right]}$) and covariance ($\sum_j^{\left[k\right]}$) of the estimation, one for each feature $j=1..N$ represented in the map $m$.
+The basic steps of the FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} algorithm are the following ones~\cite{book:probabilistic-robotics}:
+
+\begin{itemize}[nosep]
+\item for each particle $k=1..M$:
+  \begin{enumerate}[nosep]
+  \item \textbf{retrieval:} retrieve a pose $x_{t-1}^{\left[k\right]}$ from the particle set;
+  \item \textbf{prediction:} sample a new pose $x_{t}^{\left[k\right]} \sim p\left(x_t \;\vert\; x_{t-1}^{\left[k\right]},u_t\right)$ using the probabilistic motion model of the robot (the improved version, FastSLAM~2.0~\cite{slam:pf:fastslam-2.0}, incorporates also the sensor measurements $z_t^i$ in this step);
+  \item \textbf{measurement update:} for each observed feature obtained from a measurement $z_t^i$, identify the correspondence $j$ in the particle map, and incorporate $z_t^i$ into the corresponding \gls{EKF}, updating the mean ($\mu_j^{\left[k\right]}$) and covariance ($\sum_j^{\left[k\right]}$) of the corresponding map feature accordingly;
+  \item \textbf{importance weight:} compute the importance weight $w^{\left[k\right]}$ for the new particle.
+  \end{enumerate}
+\item \textbf{resampling:} sample, with replacement, the $M$ particles, where the probability of sampling being proportional to $w^{\left[k\right]}$, to incorporate the measurements $z_t^i$ into the robot pose $x_{t}^{\left[k\right]}$ (due to only considering the most recent control $u_t$ in the previous steps, only in FastSLAM~1.0~\cite{slam:pf:fastslam-1.0}).
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{literature/slam-pf.pdf}
+  \caption[Composition of particles in FastSLAM in terms of path estimate and the set of estimators and associated covariances for individual feature locations.]{Composition of particles in FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} in terms of path estimate and the set of estimators and associated covariances for individual feature locations~\cite{book:probabilistic-robotics}.}
+  \label{fig:fastslam}
+\end{figure}
+
+The adaptation of FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0} to occupancy grid-based \gls{SLAM} is implemented by the GMapping~\cite{slam:pf:gmapping} algorithm. This adaptation requires the modification of three modules relative to FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}.
+First, GMapping~\cite{slam:pf:gmapping} considers the occupancy grid as the map representation for the \gls{SLAM} problem, where each particle contains a grid map.
+Next, the computation of a measurement likelihood ($p\left(z_t \;\vert\; x_{t}^{\left[k\right]}, m_{t-1}^{\left[k\right]}\right)$) uses the beam endpoint sensor model, characteristic of range-bearing sensors such as 2D lasers, instead of integrating the measures into an \gls{EKF} as in FastSLAM~\cite{slam:pf:fastslam-1.0,slam:pf:fastslam-2.0}. This model considers the individual scan beams independent from each other, using the distance between the beam endpoint and the closest obstacle in the map to that point to compute the beam's individual likelihood.
+Lastly, the update of each particle's map ($p\left(m_t^{\left[k\right]} \;\vert\; z_t x_{t}^{\left[k\right]}, m_{t-1}^{\left[k\right]}\right)$)  computes a new occupancy grid map. This update estimates the probability of each individual cell, assuming the independence of each other, using a binary Bayes filter and the inverse model of the sensor measurements~\cite{book:probabilistic-robotics}.
+
+A key advantage of particle filter-based \gls{SLAM} is the decisions on data associations being made on a per-particle basis, instead of the most likely one as in scan matching or \gls{EKF} approaches. This characteristic represents inherently multi-hypotheses associations in the filter, making it more robust to data association problems.
+Another advantage is particle filters being capable to model non-linear robot motions without requiring model approximations.
+However, a disadvantage of particle filters is relative to loop closure detection. Even though these filters are able to detect previously visited places, unlike scan matching approaches such as HectorSLAM~\cite{slam:scan-match:hector}, this place recognition ability is only maintained through the diversity in the particle sets, possibly maintaining larger sets and requiring more computational resourcers~\cite{book:probabilistic-robotics}.
+
+
+
+
+\subsection{Pose graph}\label{sec:slam:graph}
+
+Another solution for the \gls{SLAM} problem leveraging its graphical model (illustrated in Figure~\ref{fig:slam}) is pose graph \gls{SLAM}, also known as GraphSLAM. This optimization-based solution consists of two subsystems, as in filter-based approaches such as particle filters and \gls{EKF}.
+In filter-based \gls{SLAM}, the filters implement a prediction stage usually based on the vehicle's motion model, and then, the correction phase updates the predicted state by matching the sensor observation to the map.
+As for optimization-based solutions such as the posse graph formulation, a first module also known as the front-end is responsible to identify constraints of the problem based on sensor data by finding correspondences between new observations and the current map. Then, a second subsystem known as the back-end computes  or refines the poses of the graph and the map minimizing the coherence errors as a whole. This second module usually requires optimization algorithms such as Gauss-Newton or Levenberg-Marquardt for minimizing the objective function~\cite{review:bresson:2017}. However, there are available in the literature optimization more specific for the pose graph formulation, \eg, \gls{TORO}~\cite{slam:graph:toro}, \gls{iSAM}~\cite{slam:graph:isam,slam:graph:isam2}, or $g^2o$~\cite{slam:graph:g2o}.
+
+Furthermore, the edge connection in GraphSLAM between vertexes $x_i$ and $x_j$ is illustrated in Figure~\ref{fig:graph-slam}.
+Considering $z_{ij}$ as a virtual measurement obtained from raw sensor data between those two vertexes, let $z_{ij}$ and $\Omega_{ij}$ be the mean and the information matrix of the virtual data, respectively. This virtual measurement actually represents the transformation that maximizes the overlap between the observations acquired from the pose nodes $i$ and $j$.
+The log-likelihood $l_{ij}$ (see Definition~\ref{def:log-likelihood}) of the measurement $z_{ij}$ can be defined as in Equation~\ref{eq:slam:graph:log-like}, where $\hat{z}_{ij}\left(x_i,x_j\right)$ is the prediction of the virtual measurement given the configuration of the nodes $x_i$ and $x_j$.
+Then, the configuration of nodes $x^*=\left(x_1,\dots,x_T\right)^T$ can be found formulating a maximum likelihood problem that minimizes the negative log-likelihood function $F\left(x\right)$ (see Equation~\ref{eq:slam:graph:function}) of all the observations, seeking to solve the Equation~\ref{eq:slam:graph:solution}~\cite{slam:graph:tutorial}.
+For exemplification purposes, two possible examples of virtual measurements are wheeled odometry and 2D laser scan matching data. Both cases would define the prediction of the measurement as $\hat{z}_{ij}=x_j-x_i$.
+The virtual measurement would be $z_{ij}=x_j - g\left(x_i,u_{ij}\right)$ for wheeled odometry, where $g\left(x_i,u_{ij}\right)$ represents the odometry estimation of $x_j$ starting from $x_i$, while using the wheeled odometry data $u_{ij}$ between those two nodes.
+As for the scan matching case, the measurement would be $z_{ij}=h\left(z_i,z_j\right)$ representing the matching between the laser scans $z_i$ and $z_j$ acquired from the nodes $x_i$ and $x_j$, respectively.
+
+\begin{definition}[{\cite[p.~224]{book:math-statistics}}]\label{def:log-likelihood}
+``...since the natural logarithm is a one-to-one function on $\mathbb{R}^+$, no information about $\theta$ is lost when the log-likelihood function $l\left(\theta\right)=\ln\left[p\left(\theta\right)\right]$ is used in place of $p\left(\theta\right)$.
+Moreover, for many probability models, it is easier to work with the log-likelihood function than with the likelihood function...''
+\end{definition}
+
+\begin{equation}\label{eq:slam:graph:log-like}
+l_{ij} \propto \left[z_{ij}-\hat{z}_{ij}\left(x_i,x_j\right)\right]^T \Omega_{ij} \left[z_{ij}-\hat{z}_{ij}\left(x_i,x_j\right)\right]
+\end{equation}
+
+\begin{equation}\label{eq:slam:graph:function}
+F\left(x\right) = \sum_{i,j} e_{ij}^T \Omega_{ij} e_{ij}
+\end{equation}
+
+\begin{equation}\label{eq:slam:graph:solution}
+x^* = \argmin_x F\left(x\right)
+\end{equation}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.45\textwidth]{literature/slam-graph.pdf}
+  \caption[Edge connection in the graph formulation of the SLAM problem between vertexes $x_i$ and $x_j$ originated from a measurement $z_{ij}$.]{Edge connection in the graph formulation of the \gls{SLAM} problem between vertexes $x_i$ and $x_j$ originated from a measurement $z_{ij}$~\cite{slam:graph:tutorial}.}
+  \label{fig:graph-slam}
+\end{figure}
+
+A pose graph \gls{SLAM} implementation is the \gls{SLAM} Toolbox framework~\cite{slam:graph:slam-toolbox}, also available in the official navigation stack of the \gls{ROS}~\cite{ros,ros2} (version ROS2).
+This toolbox is intended for 2D \gls{SLAM} using a 2D laser scanner in conjunction with wheeled odometry obtained from the wheel encoders of the robot's motors.
+The optimization framework used for the pose graph back-end is the Ceres Solver~\cite{ceres}.
+Although \gls{SLAM} Toolbox~\cite{slam:graph:slam-toolbox} states having lifelong mapping capabilities, these are only relative to being able to update existing maps and serialize the data for use in other mapping sessions, not for dynamic environments or appearance invariance.
+
+Overall, a key difference between pose graph \gls{SLAM} compared to other solutions for the \gls{SLAM} problem, such as filter and scan matching approaches, is that the former has access to the full data when building the map, being able to apply improved linearization and data association techniques. Indeed, in GraphSLAM, all data can be used to linearize and calculate correspondences, \ie, can revise past data association and linearize more than once~\cite{book:probabilistic-robotics}.
+This key difference is pointed as a possible reason to graph \gls{SLAM} tending to give better results than filters, where the latter is more subject to linearization issues~\cite{review:bresson:2017}.
+However, the pose graph formulation shows a linear growth over time in the graph's size requiring techniques for constraining the graph size (see Section~\ref{sec:context}), and thus, limit the computational resources required for continuously performing GraphSLAM~\cite{book:probabilistic-robotics}.
+
+
+
+
+
+
+\section{Long-term SLAM in dynamic environments}\label{sec:slam-dynamic}
+
+In terms of works in the literature for long-term \gls{SLAM}, as previously mentioned, Appendix~\ref{ap:slr} includes a systematic literature review on that topic following the \gls{PRISMA}~\cite{methodology:prisma} guidelines. The literature review goes over several challenges related to long-term autonomy having the date of the last full inquiry for identifying records in the data sources considered in the study on May 17, 2022.
+Given the focus of this research proposal on the challenge for performing \gls{SLAM} in dynamic environments, this section focus on the included works of the review study categorized as dynamic in the data extraction phase of the methodology. Furthermore, another full inquiry was performed on October 25, 2022, to include more recent works published or made available online between the date considered in the review up to the latter one.
+As a result, after executing all stages of the review methodology described in Appendix~\ref{ap:slr} and focusing only on dynamic-related works, another five records were found in the literature (\cite{liu-et-al:2022:8,nielsen-hendeby:2022:9841255,guo-liu:2021:9739362,thomas-et-al:2022:9812297,fu-et-al:2022:3191794}). However, given that the work \cite{thomas-et-al:2022:9812297} is an extension of \cite{thomas-et-al:2021:9561701}, as assumed in the review, only the extended version will be considered for the discussion.
+
+So, next, this section analyzes literature works focused on modeling and identifying dynamic elements in the environment within the scope of long-term \gls{SLAM}, \ie, how the methods identify these elements and handle them for long-term localization and mapping.
+The discussion on dynamics modeling is organized into the following topics: specific map representations used to model or deal with dynamic elements in the scene, identification of dynamic elements matching the current observation to the current map, future prediction of dynamic properties of scene elements, and semantic identification of dynamic objects.
+
+
+
+
+\subsection{Map representation}\label{sec:slam-dynamic:map}
+
+Inspired by the human memory, Dayoub~\etal~\cite{dayoub-et-al:2011:013} and Bacca~\etal~\cite{bacca-et-al:2013:003} adapt the multi-store model of Atkinson~and~Shiffrin~\cite{discussion:atkinson:stm+ltm} for robot mapping. This model divides the memory into three stores: \gls{SM} to save the perceived information, \gls{STM}, and \gls{LTM}.
+Three mechanisms move information between memories: selective attention for \gls{SM} to \gls{STM}, rehearsal to commit information from \gls{STM} to \gls{LTM} or which one is forgotten, and the retrieval mechanism to move unused information from \gls{LTM} back to \gls{STM}.
+Dayoub~\etal~\cite{dayoub-et-al:2011:013} implements two types of state machines for rehearsal and retrieval mechanisms of the \gls{STM} and \gls{LTM}. In rehearsal, a \gls{STM} feature moves closer to \gls{LTM} or moves back to the initial state (or forgotten if already in that state) when observed consecutively or if not, respectively. Similar for retrieval, where a feature in \gls{LTM} moves to the initial state or closer to forget if observed in the current view or not.
+Consequently, \gls{LTM} and \gls{STM} save the most static and dynamic features based on their observability in the current view, respectively.
+In a changing environment, the method decreased the localization failure rate compared to a static view.
+Instead of using a state machine, Bacca~\etal~\cite{bacca-et-al:2013:003} implements a \gls{FSH} depending on the feature observability to distinguish between \gls{STM} and \gls{LTM} features using $k$-means clustering. This modification allows that an input feature in \gls{SM} can bypass \gls{STM} and become part of \gls{LTM} depending on the feature strength.
+The method was able to filter out pedestrians from 2D laser and camera data and achieved a more accurate representation of the environment compared to a static approach.
+
+Although Biber and Duckett~\cite{biber-duckett:2009:0278364908096286} does not adopt specific memory mechanisms, they implement \gls{STM} and \gls{LTM} maps. The method implements a dynamic map as a set of local maps, each maintaining submaps representing different timescales. The timescale parameter of each submap determines probabilistically when to add samples from 2D laser scans.
+The dynamics of the environment are represented by using 5 different timescales, where the smaller one ($\sim$3.1s) represents an \gls{STM} map updated at every instant and the other 4 timescales ($\sim$0.43runs, 0.43days, 3.1days, and 13.5day) are \gls{LTM} submaps updated after each session or daily. Instead of only localizing on the \gls{LTM} maps as Dayoub~\etal~\cite{dayoub-et-al:2011:013} and Bacca~\etal~\cite{bacca-et-al:2013:003}, Biber and Duckett~\cite{biber-duckett:2009:0278364908096286} selects the best representation of both \gls{STM} and \gls{LTM} maps that best explain the sensor data.
+In a 5 weeks experiment, the localization with a dynamic map improved while a static representation degraded over time, while the timescales led to static parts as walls emerging in \gls{LTM} and dynamic elements disappearing from \gls{STM} maps.
+
+Similar to the works \cite{dayoub-et-al:2011:013} and \cite{bacca-et-al:2013:003}, two maps can represent a more stable and a more dynamic representations of the environment.
+In Walcott-Bryant~\etal~\cite{walcott-bryant-et-al:2012:6385561}, an active map represents the most current state of the environment, including parts that did not change from previous passes and objects added to the environment. A dynamic map only saves the points of a 2D laser scan that changed over time.
+Wang~\etal~\cite{wang-et-al:2019:8793499} uses a tracking map with short-term static points and a long-term map only containing long-term static points identified by a semantic segmentation module with ORB-SLAM2~\cite{discussion:orb-slam2}.
+Also, Zhu~\etal~\cite{zhu-et-al:2021:9561584} creates offline a semi-dynamic map and a static one, where the former has semi-dynamic objects (parked cars in a parking lot environment) and the latter has both static and semi-dynamic objects.
+The main goal of representing two different dynamics is usually to favor the most stable one in the long-term.
+Walcott-Bryant~\etal~\cite{walcott-bryant-et-al:2012:6385561} and Wang~\etal~\cite{wang-et-al:2019:8793499} only use static parts in the most current representation of the environment (active and the long-term maps, respectively) for localization.
+In the experiments, the approach \cite{walcott-bryant-et-al:2012:6385561} showed that their method was able to identify static parts, although it was affected by false positives and negatives, and by the blur effect in the 2D grid map.
+The method \cite{wang-et-al:2019:8793499} improved the \gls{ATE} in a dynamic environment over ORB-SLAM2~\cite{discussion:orb-slam2} and DynaSLAM~\cite{bescos-et-al:2018:2860039}.
+As for Zhu~\etal~\cite{zhu-et-al:2021:9561584}, its \gls{MCL} framework (equivalent to particle filter-based localization) reduces the weight corresponding to observations of moved semi-dynamic objects. The method improved the localization in a parking lot compared to a standard \gls{MCL}.
+
+As for a multi-hypothesis representation, Nielsen and Hendeby~\cite{nielsen-hendeby:2022:9841255} propose a framework for tracking the landmarks positions using Markov chains to model the transition between positions. The method~\cite{nielsen-hendeby:2022:9841255} groups the positions hypotheses based on the landmark's signature, where the position with the highest probability within a group according to incoming observations is selected as the active one. The hypothesis likelihood depends on the matched measurements to the landmark in the map and also on the number of missed detections, \ie, landmarks with a probability of being seen in the current pose but not represented in the observations.
+Although the method \cite{nielsen-hendeby:2022:9841255} maintained an up-to-date representation of the actual landmark positions in simulated experiments, the experiments assumed always uniquely identifiable landmarks.
+
+
+
+
+\subsection{Map matching}\label{sec:slam-dynamic:matching}
+
+Environment dynamics can be identified by comparing the current observation to the map.
+Assuming a prior vector map as a permanent map, the work of Biswas and Veloso~\cite{biswas-veloso:2017:005} determines the probability of observed features being long-term ones by the 2D laser scan-to-map matching distance. Short-term features are determined by the scan-to-scan matching distance, while the remaining ones are considered dynamic features and not considered for localization. Compared to \gls{MCL} with a static map and to Tipaldi~\etal~\cite{tipaldi-et-al:2013:0278364913502830}, Biswas and Veloso~\cite{biswas-veloso:2017:005} obtained lower localization error in a parking-lot environment. However, the method \cite{biswas-veloso:2017:005} would not handle semi-static changes.
+Instead of using a permanent map, Zhang~\etal~\cite{zhang-et-al:2019:8814347} maintains a \gls{SDF} representation based on a prior occupancy map. The proposed approach \cite{zhang-et-al:2019:8814347} rejects dynamic points identified by range flow and updates the \gls{SDF}-based map with semi-static changes observed in the scan-to-map difference. Compared to \gls{MCL} in a semi-static environment, Zhang~\etal~\cite{zhang-et-al:2019:8814347} had lower pose errors and an improved representation of the environment.
+Similarly, Fu~\etal~\cite{fu-et-al:2022:3191794} uses \glspl{SDF} in the mapping process, proposing the PlaneSDF representation where a scene is a set of planes and each one has associated a \gls{SDF} volume. This volume describes the geometric details of the objects attached to its associated plane. Then, a change detection algorithm performs a 2D height map comparison and a 3D geometric validation between two PlaneSDF-based maps to compute a change mask. However, the method \cite{fu-et-al:2022:3191794} failed to detect changes in ambiguous situations such as object occlusions in the height comparison direction.
+Boniardi~\etal~\cite{boniardi-et-al:2019:003} detects semi-static changes leveraging the \gls{ICP} scan-to-map consistency and a \gls{CAD} prior of the environment, and updates the map accordingly. The method \cite{boniardi-et-al:2019:003} was capable of maintaining a consistent map when dealing with substantial reconfiguration of the environment.
+Du~\etal~\cite{du-et-al:2022:3028218} minimizes the Gibbs energy defined on the proposed \gls{LC-CRF} for detecting dynamic points, considering that these points have often a large reprojection error in frame-to-map matching and points tend to have the same dynamic properties as the neighbor ones. In a dynamic scene, \gls{LC-CRF}~\cite{du-et-al:2022:3028218} achieved lower \gls{ATE} than ORB-SLAM~\cite{mur-artal-et-al:2015:2463671}.
+Unlike \gls{LC-CRF}~\cite{du-et-al:2022:3028218}, the \gls{DFR-SLAM} proposed by Liu~\etal~\cite{liu-et-al:2022:8} does not look for similar dynamic properties in the features neighbor. Instead, the method \cite{liu-et-al:2022:8} assumes that static features have consistent motion over long time and dynamic ones have different motion patterns, labeling them using the proposed motion consensus filtering algorithm. \gls{DFR-SLAM}~\cite{liu-et-al:2022:8} formulates binary classification problem based on a graph-cut optimization framework, assigning penalties to connected visual features between different instants that do not share the same label. The method \cite{liu-et-al:2022:8} had lower \gls{ATE} than ORB-SLAM2~\cite{discussion:orb-slam2} in dynamic scenarios.
+
+Furthermore, Pan~\etal~\cite{pan-et-al:2019:s19194252} and Ding~\etal~\cite{ding-et-al:2020:2942760} leverage clustering properties of the observations evaluating the observations count.
+The approach \cite{pan-et-al:2019:s19194252} segments the points of a 3D \gls{LiDAR} point cloud into different clusters assuming that dynamic points do not appear frequently in the same place. The map only considers clusters that appear in same location more than 10 times.
+As for Ding~\etal~\cite{ding-et-al:2020:2942760}, the method builds on the assumption that dynamic and static parts of the environment have a clustering property relative to its neighbors (similar to Du~\etal~\cite{du-et-al:2022:3028218}). The number of observations in different sessions combined with its consistency relative to its neighbors determine if a map point is static throughout the sessions.
+Both representations of the environment in Pan~\etal~\cite{pan-et-al:2019:s19194252} and Ding~\etal~\cite{ding-et-al:2020:2942760} were stable to structural changes in the environment.
+
+The concept of ray tracing is also used by the included works to handle dynamic changes.
+Lázaro~\etal~\cite{lázaro-et-al:2018:8594310} uses ray tracing to exploit the free space information. When comparing two 2D point clouds from a viewpoint, the ray tracing evaluation identifies new objects added to the scene (observed point closer to viewpoint than the old one) and outdated information (observed point further way), allowing the identification of dynamic changes and having an up-to-date representation for localization.
+Given that ray tracing in 3D is expensive in terms of memory and requires dense map representations, Pomerleau~\etal~\cite{pomerleau-et-al:2014:6907397} uses directly the sparse point cloud from a 3D laser. The map points are associated with each single reading in small conical apertures in spherical coordinates, updating the observed points closer than the mapped ones and the further ones are left untouched. The approximation of ray tracing results are used to update the probability of points in the map to be dynamic, based on a Bayesian approach. The probability of being dynamic can be used in \gls{ICP} to not trust dynamic points and indeed, in the experiments, the work \cite{pomerleau-et-al:2014:6907397} had a more precise and cleaner map of the environment than using a standard \gls{ICP} matching.
+Instead of weighting the map points, An~\etal~\cite{an-et-al:2016:0} proposes the \gls{DEL} to model the dynamics in the edges of a pose graph instead on the data itself. The observation of moving obstacles between two poses change the weight of the respective edge, decrease gradually the weight until not detecting the obstacle. Integrating \gls{DEL} in an exploration scheme, nodes with a edge weight average lower than a certain threshold, meaning frequent moving obstacles or changed structure near that node, are not considered for exploration due to the robot may be unable to move to that position.
+
+Although the standard \gls{NDT} representation does not model free space, the works of Einhorn and Gross~\cite{einhorn-gross:2013:6698849,einhorn-gross:2015:008} and Saarinen~\etal~\cite{saarinen-et-al:2013:0278364913499415} use \gls{NDT} with occupancy maps to model explicitly the free space and adopt exponential weighted moving average and covariance for new measurements having an higher influence than old ones.
+Einhorn and Gross~\cite{einhorn-gross:2015:008} proposes a generic 2D/3D mapping using \gls{NDT} and occupancy maps. The hit cells considering the current observation are updated incrementally with exponential weighting. The other cells along the sensor beam potentially empty are updated using the standard update rule of occupancy maps based on the log-odds of the occupancy value and on the inverse range sensor model.
+Instead of using the standard occupancy map update, the sensor model in Saarinen~\etal~\cite{saarinen-et-al:2013:0278364913499415} depends on the inconsistency between observation and map. Also, the occupancy value describes the confidence of the \gls{NDT} based on past observations.
+As for Einhorn and Gross~\cite{einhorn-gross:2015:008}, the method defines two probabilities for the occupancy map: occupancy and statically occupied, where the first is updated based on the sensor model (2D/3D generic beam sensor), and the second one is adapted slowly to high probability for static objects in the environment. The statically occupancy probability follows the proposed ad-hoc model that is parameterized to control how fast the static occupancy probabilities are adapted, depending also on the occupancy probability itself.
+The works \cite{einhorn-gross:2013:6698849} and \cite{einhorn-gross:2015:008} were able to handle semi-static and dynamic changes having a consistent and up-to-date representation of the environment, while the approach \cite{saarinen-et-al:2013:0278364913499415} favored long-term static structures in dynamic environments.
+
+
+
+
+\subsection{Dynamic objects detection}\label{sec:slam-dynamic:obj-detect}
+
+In terms of detecting dynamic objects, Yue~\etal~\cite{yue-et-al:2020:9197072} proposes a collaborative dynamic mapping for detecting humans using visual and thermal images and a 3D \gls{LiDAR}. The YOLOv3 algorithm extracts the bounding boxes from the images relative to humans. The 3D point cloud projection onto the images allows the creation of a static point cloud for localization and mapping of each robot by filtering out the points corresponding to humans. In the experiments, the dynamic objects removal generated a more accurate relative transformation of the collaborative maps compared to not removing those objects.
+Zhu~\etal~\cite{zhu-et-al:2021:9561584} also uses YOLOv3 to extract bounding boxes of dynamic classes (parked cars) from a RGB image, and the projection of 3D \gls{LiDAR} points allows the creation of the static and semi-dynamic maps required for localization. Even though the method \cite{zhu-et-al:2021:9561584} does not discard the dynamic objects, the localization module reduce the importance of weight of the corresponding observations.
+Instead of using visual data, Sun~\etal~\cite{sun-et-al:2018:2856268} adapts the PointNet network for object recognition (pedestrian, cyclist, car, or background) to classify the scan points of a 3D \gls{LiDAR}. The proposed Recurrent-OctoMap maintains the occupancy and semantic information, where the latter information specifies the cell semantic state and the probability of the prediction. The transition between states is learned by a \gls{LTM} \gls{RNN}. In a long-term experiment, the method \cite{sun-et-al:2018:2856268} was able to improve its 3D semantic map compared to a standard Bayes update.
+
+Moreover, pixel-wise semantic segmentation is another way to identify dynamic objects.
+Additionally to the semantic-descriptor proposed by Singh~\etal~\cite{singh-et-al:2021:9564866} describing the spatial distribution of semantic entities in the scene, the method sets lower weights to features detected on sky and dynamic classes (person, car, \etc) from the semantic segmentation of images using EdgeNet. The proposed approach \cite{singh-et-al:2021:9564866} obtained higher accuracy when compared to SeqSLAM~\cite{discussion:seqslam}, FAB-MAP~\cite{discussion:fab-map}, and \gls{BoW}~\cite{discussion:bow}-based place recognition methods in a highly dynamic outdoor experiment.
+Instead of identifying object classes, Song~\etal~\cite{song-et-al:2019:8967749} proposes the MD-Net \gls{CNN} to segment a grayscale image into unstable, static, and moving pixel points, only using static points for localization. The localization error was reduced compared to not estimated the pixel dynamic attribute.
+Ganti and Waslander~\cite{ganti-waslander:2019:00024} proposes the \gls{SIVO} to improve the performance of ORB-SLAM2~\cite{discussion:orb-slam2} by using the Bayesian neural network SegNet for segmentation and computation of the network uncertainty. SegNet is trained to distinguish different object classes for identifying dynamic objects (sky, car, truck/bus, person/rider, motorcycle/bicycle, and void) from static ones (road, traffic sign, building, wall/fence, pole, vegetation, sidewalk, traffic light, and terrain). Only static keypoints that reduce the most of the state's uncertainty (considering the network uncertainty) are considered as input for ORB-SLAM2~\cite{discussion:orb-slam2}.
+\gls{SIVO}~\cite{ganti-waslander:2019:00024} was able to remove uninformative and dynamic keypoints from the current frame. However, the rejection of potential dynamic objects without verifying if they are moving reduced the localization performance of the module in certain scenarios.
+
+Dynamic objects identification can be improved by verifying geometric constraints.
+Bescos~\etal~\cite{bescos-et-al:2018:2860039} proposes DynaSLAM, using multi-view geometry verification for improving semantic labeling of potential dynamic classes obtained from a Mask \gls{RNN}. Although DynaSLAM~\cite{bescos-et-al:2018:2860039} outperformed ORB-SLAM2~\cite{discussion:orb-slam2} in highly dynamic scenarios, its performance reduces in slower dynamics.
+Similarly, Wang~\etal~\cite{wang-et-al:2019:8793499} also uses a geometric verification for improving labeling of dynamic objects, the latter obtained by a ResNet-based network. The verification is based on the reprojection error. The method \cite{wang-et-al:2019:8793499} improved the \gls{ATE} over DynaSLAM~\cite{bescos-et-al:2018:2860039} and ORB-SLAM2~\cite{discussion:orb-slam2} in a scenario with movable objects.
+Guo and Liu~\cite{guo-liu:2021:9739362} also uses a Mask \gls{RNN} network for pixel-wise segmentation and object instance labels, similar to DynaSLAM~\cite{bescos-et-al:2018:2860039}. Rather than using multi-view geometry verification just for improving semantic labeling, this verification is used in \cite{guo-liu:2021:9739362} also for detecting untrained moving objects. The approached \cite{guo-liu:2021:9739362} outperformed DynaSLAM~\cite{bescos-et-al:2018:2860039} in terms of \gls{ATE} in dynamic scenes.
+Instead of using semantic segmentation, the \gls{SGC-VSLAM}~\cite{yang-et-al:2020:s20082432} proposed by Yang~\etal\  uses YOLOv3 to extract bounding boxes of dynamic objects for also improving ORB-SLAM2~\cite{discussion:orb-slam2}. A constraint based on epipolar geometry improves the labeling. \gls{SGC-VSLAM} decrease the \gls{RMSE} of the \gls{ATE} by 96\% compared to ORB-SLAM2~\cite{discussion:orb-slam2} in highly dynamic environments. However, similar to DynaSLAM~\cite{bescos-et-al:2018:2860039}, its performance decreased in lower dynamics.
+Finally, Xing~\etal~\cite{xing-et-al:2022:22062} proposes the DE-SLAM to deal with \gls{STD} and \gls{LTD} at the same time. A MobileNetv2 identifies bounding boxes of movable objects (cars, persons, \etc) classified as \gls{STD}. A motion check of \gls{STD} elements recognizes all moving objects in the current keyframe. As for \gls{LTD}, DE-SLAM uses \gls{HOG} features extracted from ORB keypoints to improve its invariance to illumination changes. In the experiments, DE-SLAM~\cite{xing-et-al:2022:22062} improved the localization over ORB-SLAM2~\cite{discussion:orb-slam2} in a changing environment.
+All of these methods using geometric constraints to improve semantic labeling only use static features for localization and mapping.
+
+
+
+
+\subsection{Prediction modeling}\label{sec:slam-dynamic:predict}
+
+In the included works, Markov processes are used to predict the dynamics of the environment.
+Tipaldi~\etal~\cite{tipaldi-et-al:2013:0278364913502830} uses a dynamic occupancy grid and exploits the stationary distribution and the state holding time associated with \glspl{HMM} on a 2D grid. The method uses past observations for each run to learn the state transition probabilities iteratively to estimate the \gls{HMM} parameters. Then, the localization can infer how often is expected to see a dynamic object in the environment and for how long. Comparing the proposed \gls{HMM}-based localization to \gls{MCL} using a standard grid, the former had a lower localization failure rate than \gls{MCL}, capable of dealing with high dynamics (moving cars) and lower ones (parked cars).
+Rapp~\etal~\cite{rapp-et-al:2015:77} implements a semi-Markov process extended by a Levy process to model a time dependency on the state holding time of Markov processes, also predicting as Tipaldi~\etal~\cite{tipaldi-et-al:2013:0278364913502830} the expected retention time for each cell being in a specific state. In the experiments, the proposed model \cite{rapp-et-al:2015:77} integrated in \gls{MCL} improved the classic \gls{MCL} in a dynamic environment.
+
+The environment dynamics can have periodic patterns associated with them.
+Assuming periodic changing patterns, Krajník~\etal~\cite{krajník-et-al:2017:2665664} proposes \gls{FreMEn} to model the probability of occupancy or feature visibility in a grid as a combination of harmonic functions related to periodic processes. \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} uses spectral analysis (Fourier transform) to compute the harmonic functions and predict future state with a given confidence. In a changing environment, \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} outperformed a static map in terms of localization error by selecting the most likely visible features at each location for localization.
+Santos~\etal~\cite{santos-et-al:2016:2516594} adopts \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} within an exploration scheme, where the planner predicts which areas are more likely to change at a certain time and generate the subsequent locations to explore. The experimental results showed that considering the environment dynamics increases the amount of information gathered compared to static models.
+Unlike \gls{FreMEn}~\cite{krajník-et-al:2017:2665664}, Wang~\etal~\cite{wang-et-al:2020:9468884} models both aperiodic and periodic changes by an \gls{ARMA} model. This model describes time series as stationary stochastic processes in terms of polynomials. While \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} is able to update recursively its model online, \gls{ARMA}~\cite{wang-et-al:2020:9468884} only is updated once a day based on past observations. However, the model \cite{wang-et-al:2020:9468884} achieved a higher prediction accuracy than \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} and a lower localization failure rate than both \gls{FreMEn}~\cite{krajník-et-al:2017:2665664} and Tipaldi~\etal~\cite{tipaldi-et-al:2013:0278364913502830}.
+
+Instead of modeling the dynamics in the map, Thomas~\etal~\cite{thomas-et-al:2022:9812297} uses a KPConv network to predict online dynamic motion labels of points with single 3D laser scans as input. The method \cite{thomas-et-al:2022:9812297} is a self-supervised learning approach with two main modules: PointMap and PointRay. PointMap is an \gls{ICP}-based \gls{SLAM} algorithm to provide a point cloud map for the annotation process. PointRay uses a similar approach to Pomerleau~\etal~\cite{pomerleau-et-al:2014:6907397} to approximate ray tracing using spherical coordinates for obtaining the training annotation of dynamic labels: permanent (static points over all sessions), ground (to avoid ray tracing ground samples), and long-term (still objects in single sessions but relocated between sessions) and short-term (dynamic objects) movables, with the localization not considering the latter two. In the simulation experiments, PointMap with the proposed prediction module led to lower localization pose errors than the standard \gls{MCL} algorithm.
+
+
+
+
+
+
+\section{Conclusions}\label{sec:literature:conclusions}
+
+The systematic review on long-term localization and mapping (available in Appendix~\ref{ap:slr}) discusses literature works on the topics of appearance invariance to changing conditions, dynamics modeling, map sparsification, and multi-session, among other computational issues, allowing the identification of current challenges in the literature and future directions for long-term \gls{SLAM}.
+Given the focus of this research proposal on \gls{SLAM} in dynamic environments, the current chapter focuses on literature works related to dynamics modeling found following the systematic methodology described in Appendix~\ref{ap:slr} and summarized in Section~\ref{sec:literature-overview}.
+
+Next, the literature analysis of dynamics-related works 
+presented in Section~\ref{sec:slam-dynamic} discusses map representations proposed in the methodologies for modeling dynamics, dynamics identification and modeling using map matching, semantic detection of dynamic objects, and prediction of the environment dynamics.
+The environment representations proposed in the literature to handle moving elements in the scene are \gls{STM}/\gls{LTM}~(\cite{dayoub-et-al:2011:013,bacca-et-al:2013:003,biber-duckett:2009:0278364908096286}) memories and static/dynamic maps~(\cite{walcott-bryant-et-al:2012:6385561,wang-et-al:2019:8793499,zhu-et-al:2021:9561584}), and a multi-hypothesis framework~(\cite{nielsen-hendeby:2022:9841255}). The first two techniques are very similar. Indeed, the \gls{LTM} memory tries to filter dynamic data in the mapping process to only keep the most persistent and static observations in the map, similar to a static map. As for \gls{STM}, this memory only keeps temporary and dynamic observations, equivalent to a dynamic representation of the environment. However, these map representations formulate assumptions on the environment dynamics, such as the number of consecutive observations to be considered a static observation~(\cite{dayoub-et-al:2011:013,bacca-et-al:2013:003}), certain semantic classes assumed to be dynamic observations~(\cite{wang-et-al:2019:8793499,zhu-et-al:2021:9561584}), or discrete timescales considered in the mapping process~(\cite{biber-duckett:2009:0278364908096286}), or are susceptible to false positives and negatives~(\cite{walcott-bryant-et-al:2012:6385561}), decreasing the accuracy of the environment representation. As for a multi-hypothesis formulation, while allowing recoverability from unmatched observations to the map, the limited computational resources on an \gls{AMR} restrain the number of different hypotheses; plus, the proposed framework in \cite{nielsen-hendeby:2022:9841255} is very dependent on the uniqueness of the observations' signatures, which could not be valid for wide spaces and several rooms with similar appearance/structure.
+In terms of map matching, ray tracing-based techniques (\cite{lázaro-et-al:2018:8594310,pomerleau-et-al:2014:6907397,an-et-al:2016:0}) exploit the free space information to identify dynamic changes between different observations. However, these techniques formulate a binary classification problem (static or dynamic) and are not suitable for low dynamics (also known as semi-static, i.e., changes such as structural or non-temporary ones), the latter due to assuming right way a change as a dynamic observation. Algorithms focused on the differences between the observations between the sensor data and the map (\cite{biswas-veloso:2017:005,zhang-et-al:2019:8814347,fu-et-al:2022:3191794,boniardi-et-al:2019:003,du-et-al:2022:3028218,liu-et-al:2022:8}) are also focused only on the binary classification problem to reject dynamic changes for the localization process. Although the hybrid representation of \gls{NDT} with occupancy grid maps (\cite{einhorn-gross:2013:6698849,einhorn-gross:2015:008,saarinen-et-al:2013:0278364913499415}) is required to model free space compared to the standard \gls{NDT} formulation, the models used in those works favor newer observations, limiting the environment dynamics perceived by the algorithms.
+
+Furthermore, the dynamic objects detection algorithms found in the literature focus on retrieving semantic data from the sensor observations, independently of being bounding box detection and classification (\cite{yue-et-al:2020:9197072,zhu-et-al:2021:9561584,yang-et-al:2020:s20082432,xing-et-al:2022:22062}), or point-cloud (\cite{sun-et-al:2018:2856268}) and image pixel-wise segmentation (\cite{singh-et-al:2021:9564866,song-et-al:2019:8967749,ganti-waslander:2019:00024,bescos-et-al:2018:2860039,wang-et-al:2019:8793499,guo-liu:2021:9739362}).
+The main drawback of object detection-based evaluation of the environment dynamics is the prior assumption of certain classes being dynamic. This assumption may not stand valid in the long-term, \eg, when an object presumably dynamic remains static (and could be used for localization temporarily) or, on the contrary, a presumably static element is moving in the scene.
+As for prediction of environment dynamics, those algorithms use mostly Markov-based models (\cite{tipaldi-et-al:2013:0278364913502830,rapp-et-al:2015:77}), evaluate and predict the periodicity of changes (\cite{krajník-et-al:2017:2665664,santos-et-al:2016:2516594,wang-et-al:2020:9468884}), or use \gls{CNN}-based prediction (\cite{thomas-et-al:2022:9812297}).
+Markov-based algorithms estimate the expected retention time for each cell of a 2D grid, inferring how often and for how long a dynamic observation is predicted to appear in the cells. However, this inference is based only on a model computed offline (based on previous measurements) due to the computational requirements of estimating the models, not integrating the most recent sensor observations.
+Although \gls{ARMA}~\cite{wang-et-al:2020:9468884} improves over \gls{FreMEn}~\cite{krajník-et-al:2017:2665664,santos-et-al:2016:2516594}, the former only updates offline its prediction model.
+Finally, the \gls{CNN}-based approach \cite{thomas-et-al:2022:9812297} assumes a movable dynamic motion label for the points of single 3D \gls{LiDAR} scans that could still be considered in the localization while in its temporary static state. Also, the learning process is only executed offline, even though uses ray-tracing for data labeling in a self-supervised way.
+
+Overall, there are still open challenges in the literature on long-term \gls{SLAM} in dynamic environments. Even the definition of dynamic itself, in terms of observations of the perceived environment by a mobile robot, is not clear in the literature. Indeed, what defines a dynamic, a semi-static, or a static observation?
+So, based on the literature discussion presented in this chapter and also on the systematic review available in Appendix~\ref{ap:slr}, the following items are considered to be open challenges for handling dynamic elements in the scene:
+
+\begin{itemize}[nosep]
+\item \textbf{heterogeneous sensor configurations:} current literature on long-term \gls{SLAM} focuses mostly on a single type of sensors and/or data;
+\item \textbf{multi-modal maps:} currently, only a single type of map (\eg, grid, point cloud, feature) is considered in the mapping process when handling moving elements in the scene;
+\item \textbf{localization and mapping tightly-coupled with dynamics estimation}: instead of executing those processes independently, perform a joint estimation for the three processes;
+\item \textbf{online estimation of the observations dinamicity:} online determination of a dynamics value for the sensor observations;
+\item \textbf{human-machine interfaces:} interaction with users of \glspl{AMR}, \eg, for providing prior information provided by the user on the environment dynamics for localization and mapping tasks.
+\end{itemize}
+
+Lastly, the problem of lifelong localization and mapping in dynamic environments requires a \gls{SLAM} framework. From the ones discussed in Section~\ref{sec:slam}, GraphSLAM seems to obtain the best mapping accuracy, compared to scan matching or particle filter-based formulations~\cite{review:bresson:2017}, and to be the one most used recently, as noted in the data extraction process of the systematic review on long-term SLAM (see Appendix~\ref{ap:slr}).
+However, further discussion will be presented in the following chapters on how and which \gls{SLAM} frameworks this research proposal will consider for its research plan.
+Also, all implementations mentioned in Section~\ref{sec:slam} (HectorSLAM~\cite{slam:scan-match:hector}, GMapping~\cite{slam:pf:gmapping}, and \gls{SLAM} Toolbox~\cite{slam:graph:slam-toolbox}) are open-source and available as ROS~\cite{ros,ros2} packages (\texttt{hector\_slam}\footnote{\url{https://wiki.ros.org/hector_slam}}, \texttt{gmapping}\footnote{\url{https://wiki.ros.org/gmapping}}, and \texttt{slam\_toolbox}\footnote{\url{https://wiki.ros.org/slam_toolbox}}, respectively), facilitating possible testing and comparison during the execution of the research plan.
