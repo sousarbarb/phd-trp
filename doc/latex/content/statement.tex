@@ -1,19 +1,170 @@
 \chapter{Thesis Statement}\label{chap:statement}
 
+This chapter describes the goals of this PhD research proposal according to the problem statement under study.
+Thus, the chapter is divided into four sections.
+First, Section~\ref{sec:problem-context} contextualizes the problem under study.
+Next, Section~\ref{sec:problem-statement} describes the problem that is the focus of the research proposal, defining the problem statement.
+Section~\ref{sec:hypotheses} presents the research questions and hypothesis that will be considered throughout the execution of this research proposal.
+Then, Section~\ref{sec:aim} defines the aim and goals of this PhD proposal.
+
+
+
+
+
+
+\section{Problem Context}\label{sec:problem-context}
+
+\glsfirstplural{AMR} have been used for automating tasks, such as transportation and security monitoring, in logistic and retail companies, healthcare institutions, warehouses, agriculture businesses, among others~\cite{amr:overview:intel}.
+Although the application of \glspl{AMR} for those use cases can be in the context of indoor and outdoor environments, this research proposal focuses on the localization of ground \glspl{AMR} indoors.
+
+Moreover, an \gls{AMR} requires a representation of its surroundings to localize itself relative to the indoor environment. The robot's sensors allow the perception of the environment and extraction of meaningful data for the consequent building of the environment representation~\cite{book:intro-robotics}.
+The sensors may be proprioceptive or exteroceptive.
+The first ones measure internal values of the system (robot). Examples of proprioceptive sensors are the wheel encoders to measure angular speed of the wheels and \glspl{IMU} for estimating 6~\gls{DoF} of the vehicle -- position ($x$, $y$, $z$) and orientation (roll, pitch, yaw) -- fusing the measures obtained from accelerometers, gyroscopes, and possibly magnetometers.
+Exteroceptive sensors acquire information from the environment. Examples of these sensors are 2D/3D lasers and RGBD cameras for obtaining range and bearing readings and cameras for vision.
+Although exteroceptive sensors are the ones that extract data from the environment, proprioceptive readings allow continuing the estimation of the robot localization while not receiving valid data from exteroceptive sensors. Also, the data from both types of sensors may be fused to improve even further the robot localization and mapping processes~\cite{book:intro-robotics}.
+
+Thus, this PhD research proposal considers a mobile platform with both proprioceptive and exteroceptive sensors. The sensorization setup considered throughout the work plan execution will have at least wheel encoders and 2D/3D lasers for obtaining 2D relative motion readings from the robot and range and bearing data from the environment, respectively.
+An \gls{IMU} sensor may be added for estimating 6 \gls{DoF} instead of only 3 \gls{DoF}, the latter in the case of using only wheel encoders, while also allowing the detection of wheel slippery.
+Although RGBD sensors may also be considered, possibly only the range-bearing data obtained from the depth sensor will be used in this PhD research. This choice justifies by the fact of range and bearing readings being less affected by appearance variance of the environment, especially indoors, focusing this research work on the dynamic variations of elements present in the scene.
+Even so, visual information may be used for evaluating if the algorithms to be developed within the scope of this PhD research proposal improve localization and mapping processes in the presence of not only dynamic elements in the scene but also appearance changes (\eg, lighting conditions, weather and seasonal changes affecting the lighting conditions from windows in indoors).
+
+
+
+
 
 
 \section{Problem Statement}\label{sec:problem-statement}
+
+As discussed in Section~\ref{sec:context}, a map does not require future updates in static scenes due to the map remaining consistent with the explored environment. However, most application use cases of \glspl{AMR} have moving elements in the surroundings or reconfiguration of the environment that affect the consistency of the map throughout time. Indeed, the system should decide how and when to update the map, the so-called stability-plasticity dilemma, where a long-term \gls{SLAM} system should adapt to new changes and preserve older ones, the latter in case the environment returns to older states~\cite{biber-duckett:2009:0278364908096286}.
+
+This PhD research proposal focus on the problem of localizing a mobile robot within a dynamic indoor environment.
+This problem is directly related to \glsfirst{SLAM}, given the need to update the map concurrently to the localization upon dynamic changes in the surroundings of the robot.
+Furthermore, this research proposal is not limited to a specific type of dynamics, for example, only detecting semi-static dynamics -- changes between running sessions or the ones occurring outside of the robot sensors' \gls{FOV} at different time instants -- or only dealing with highly dynamic elements in the scene (\eg, moving persons or objects).
+Still, the assumptions on the sensorization setup discussed in Section~\ref{sec:problem-context} are considered in the proposal to focus to scope of the problem on the dynamics challenge of performing long-term \gls{SLAM}, not on appearance variance issues that may also occur, as explained in Section~\ref{sec:context}.
+
+A mathematical formulation for the problem of performing lifelong \gls{SLAM} in dynamic environments that this research proposal aims to solve is presented in Equations~\ref{eq:ricoslam:generic} and \ref{eq:ricoslam:feature}.
+These formulations are similar to the ones shown in Equations~\ref{eq:slam:full} and \ref{eq:slam:full:with-association} for the generic full \gls{SLAM} problem and the same problem with unknown correspondences, respectively, the latter in case of feature-based localization and mapping.
+Those two equations formulate the posterior probability over the robot path ($x_{1:t}$) along with the environment map ($m$) and the correspondence variables ($c_{1:t}$) between the perceived features and the map landmarks, provided the control variables ($u_{1:t}$) and the sensor measurements ($z_{1:t}$).
+One difference in the formulation presented in this chapter (Equations~\ref{eq:ricoslam:generic} and \ref{eq:ricoslam:feature}) to the original formulation of the full \gls{SLAM} problem is considering another unknown variable, specifically, the dynamics of the environment map ($d_{1:t}$).
+The other difference is wanting to estimate the environment map at different time instants ($m_{1:t}$), considering the context of the environment changing throughout time.
+Also, the formulation of the problem statement for online \gls{SLAM} is presented in Equations~\ref{eq:ricoslam:generic:online} and \ref{eq:ricoslam:feature:online}, integrating out past posterior probabilities from the full \gls{SLAM} problem.
+
+\begin{equation}\label{eq:ricoslam:generic}
+p\left(x_{1:t},m_{1:t},d_{1:t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:ricoslam:feature}
+p\left(x_{1:t},m_{1:t},c_{1:t},d_{1:t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:ricoslam:generic:online}
+p\left(x_{t},m_{t},d_{t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+\begin{equation}\label{eq:ricoslam:feature:online}
+p\left(x_{t},m_{t},c_{t},d_{t} \;\vert\; z_{1:t},u_{1:t}\right)
+\end{equation}
+
+
+
 
 
 
 \section{Research Questions and Hypotheses}\label{sec:hypotheses}
 
+Given the problem discussed in Section~\ref{sec:problem-statement}, some research questions can be formulated, aiming a solution for the problem. The three questions presented in the present section are the ones considered for the execution of this PhD research proposal. For each research question, at least one hypothesis is formulated to guide the development of a solution to solve the problem of localizing an \gls{AMR} in a dynamic indoor environment.
+
+Additionally, the block diagram representative of this PhD research proposal and illustrated in Figure~\ref{fig:amr-system} supports the formulation of hypothesis  for the respective research questions. This diagram represents the case in which a robot is moving and interacting within a non-static real world environment. The robot's internal readings provide proprioceptive readings such as wheeled or inertial odometry, allowing an estimation of a robot ``state'' that represents the estimated relative motion, among other variables. Although the exteroceptive sensors are also present on the robot, these sensors usually retrieve information from the environment, not from the robot itself. The information may be processed for feature-based \gls{SLAM} implementations to generate the observed features, be sent directly to the localization and mapping module as raw data in the case of, \eg, grid-based mapping, or even an hybrid implementation requiring both types of information for obtaining feature and grid maps.
+Then, the \gls{SLAM} module estimating the localization of the robot and the mapping of its surroundings concurrently processes the robot state and the raw data of the sensors and/or features' state (\eg, position and descriptor/signature) extracted from that data.
+The localization estimator may require the following modules: \textit{Data association} (in the case of feature-based \gls{SLAM}, to compute the correspondence variable), \textit{Matcher} (computation of a homogeneous transformation between observed data and estimated map), \textit{Pose Estimation} (robot pose in the estimated map), and \textit{Loop Closure Detection} (recognition of a previously mapped location). As for the mapping process, for grid-based implementations, only the \textit{Map Update} would be required, \ie, update the map with the current observation, given the estimated robot pose. This update may not only including the insertion in the map of the observation but also optimizing constraints between poses, the latter in the case of pose graph \gls{SLAM}. For feature-based \gls{SLAM}, the following modules should be considered in addition to the \textit{Map Update}: \textit{Landmark Tracking} (update the pose of the mapped features), \textit{Landmark Detection} (detect observed features not present in the map), and \textit{Landmark Initialization} (insert the detected feature in the map representation).
+The added modules to the standard SLAM system represented inside the RicoSLAM system are relative to this research proposal and will be explained in the hypotheses for the research questions.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{statement/statement-ricoslam.pdf}
+  \caption[Generic block diagram for this PhD thesis research proposal in the context of SLAM]{Generic block diagram for this PhD thesis research proposal in the context of \gls{SLAM}.}
+  \label{fig:amr-system}
+\end{figure}
+
+
+
+
+\begin{question}\label{question:calib}
+\textbf{How to estimate the extrinsic parameters of the robot's sensors without external equipment to improve the data consistency between the sensors and, subsequently, the \gls{SLAM} results?}
+\end{question}
+
+Although estimating the extrinsic parameters of the robot's sensors is not related directly to the \gls{SLAM} problem, fusing the data from multiples sensors for the localization and mapping modules require processing the sensors data in a common coordinate frame, usually, the robot frame. The data fusion process needs to know the value of the extrinsic parameters of each sensor, \ie, the 6~\gls{DoF} of the homogeneous transformation that relates the sensor's coordinate frame to the robot one. Subsequently, errors relative to the extrinsic parameters may lead to inconsistencies between the data from different sensors, inducing errors into the \gls{SLAM} system.
+
+Previous studies from Sousa~\etal~\cite{statement:calibration:msc-thesis,statement:calibration:review} identify the need for calibration methods to compute the extrinsic parameters of the sensors relative to the robot frame, underlining the importance of the Research Question~\ref{question:calib}.
+For answering the latter question, this research proposal formulates the Hypothesis~\ref{hypothesis:calib} focusing on an automatic approach that do not require external systems to the robot, only the proprioceptive and exteroceptive sensors present on the autonomous system. This approach takes on the basis that the egomotion (\ie, relative motion estimated by a sensor) estimated from different data sources of a common coordinate frame (\eg, the robot one) should converge when the extrinsic parameters have their ground-truth value.
+
+\begin{hypothesis}\label{hypothesis:calib}
+The maximization of the convergence of relative motion estimations of the robot's different sensors in the same coordinate frame, when actuating the robot to follow not necessarily a pre-defined path but one that can make observable all the extrinsic sensor parameters, will lead to an improve consistency on the data estimations of the sensors when performing \gls{SLAM} with multiple sensors, including both proprioceptive and exteroceptive data sources.
+\end{hypothesis}
+
+
+
+
+\begin{question}\label{question:mapping}
+\textbf{How to improve the mapping results and their long-term stability when performing \gls{SLAM} with a ground mobile robot in a dynamic indoor environment?}
+\end{question}
+
+In the literature (reviewed in Chapter~\ref{chap:literature}), the existent methodologies for long-term \gls{SLAM} either classify the dynamic environments into static, semi-static, and dynamic, or estimate the dynamicity of the observations offline.
+The consideration of the environment dynamics for the mapping process is usually performed by a binary classification, where only the static and long-term changes are added into the map representation in the robot used for localization.
+Furthermore, the concept of environment dynamics is not clearly defined in the literature in terms of which information retrieved from the environment estimates the dynamics. 
+
+This PhD research proposal formulates the Hypotheses~\ref{hypothesis:mapping:1} and \ref{hypothesis:mapping:2} aiming a solution for the Research Question~\ref{question:mapping}, hypothesizing on how the estimation of the environment dynamics can improve the mapping process in a dynamic environment.
+The first hypothesis states that the estimation of environment dynamics should account the map area (\eg, the history of the dynamics in a certain area, the interaction of a user with the system to define different initial guesses of the dynamics in different areas), the velocity and position of map points, and whether the points exist or not throughout time when estimating the dynamics, while also considering the dynamics clustering properties of map points relative to their neighborhood (the points tend to have the same dynamic properties as the neighbor ones\cite{du-et-al:2022:3028218}).
+Then, the second hypothesis formulates that the estimated environment dynamics can improve the long-term stability of the mapping results and their consistency to the environment by giving more importance to static elements perceived in the scene. However, this importance does not ignore nor exclude all dynamic and changing elements, due to some of them may be useful for the localization process. The Hypotheses~\ref{hypothesis:mapping:2} and \ref{hypothesis:localization} (the latter will be discussed in the context of the Research Question~\ref{question:localization}) are directly related to each other. The reason is that those two hypothesize on the tightly-coupling of the localization and mapping process with the dynamics estimation of the environment to improve the long-term results of continuously performing \gls{SLAM}.
+
+\begin{hypothesis}\label{hypothesis:mapping:1}
+The study of the dynamics history in the area to update the environment representation, the perceived and mapped points state (position, velocity), and if those points exist or not throughout time, while also hypothesizing on the dynamics clustering properties of the same points relative to their neighborhood, will give a model of the environment dynamics.
+\end{hypothesis}
+
+\begin{hypothesis}\label{hypothesis:mapping:2}
+The tightly-coupling of the environment dynamics modeling into the mapping process, using the estimation of the dynamics to weight the relevance of the map points for the environment representation, while also rejecting highly dynamic observations and giving more importance to static ones, will improve the long-term stability of the mapping results and their consistency to the environment most structural and static elements when performing \gls{SLAM} with a ground mobile robot in a dynamic indoor environment.
+\end{hypothesis}
+
+
+
+
+\begin{question}\label{question:localization}
+\textbf{How to integrate the environment dynamics modeling in the localization process when performing \gls{SLAM} with a ground mobile robot in a dynamic indoor environment?}
+\end{question}
+
+As already discussed in Chapter~\ref{chap:literature}, most of the existent methods only use the static elements represented in the map for localization. Those methods also use the binary classification on the environment dynamics to decide which elements to the map.
+However, there are elements in the scene that are can be dynamic but, for the time being, remain static and could be used for localizing the robot in the environment.
+
+So, the formulation of the Hypothesis~\ref{hypothesis:localization} aims to answer the Research Question~\ref{question:localization} on how the estimated environment dynamics may help localizing the robot in a dynamic environment. 
+This hypothesis specifies that the estimated dynamics for the map points can be weights for each observation in the matching process, while also considering the approach where some of the observations may be completely ignored. The goal is to give higher importance to completely static objects but not ignoring all dynamic elements present in the map, due to some of them may improve the localization estimation of the robot.
+
+\begin{hypothesis}\label{hypothesis:localization}
+Similar to the mapping process, the tightly-coupling of the environment dynamics modeling into the localization of a ground mobile robot, considering the map points dynamics as weights in the data association and/or map matching processes, while also completely rejecting highly dynamic observations, will achieve long-term stability of the localization results in a dynamic indoor environment.
+\end{hypothesis}
+
+
+In relation to the block diagram presented in Figure~\ref{fig:amr-system}, this PhD research proposal, \textit{RicoSLAM: Long-Term Localization and Mapping in Dynamic Environments}, intends to develop at least three modules: dynamics modeling, dynamics clustering (Hypothesis~\ref{hypothesis:mapping:1}), and the update of the dynamics map estimation (Hypotheses~\ref{hypothesis:mapping:2} and \ref{hypothesis:localization}).
+The output of the latter one is the estimated dynamics of the environment. This output will also be used for improving the \textit{Data Association}, \textit{Matcher}, and the \textit{Pose Estimation} modules of the localization process in standard \gls{SLAM}, while also using the estimated dynamics for improving the \textit{Map Update} module of the mapping process.
+As for the contribution relative to the Hypothesis~\ref{hypothesis:calib}, improving the accuracy of the extrinsic sensor parameters will affect the \textit{Robot State Estimation} and \textit{Feature Extraction} modules.
+
+
+
+
 
 
 \section{Aim and Scope}\label{sec:aim}
 
+Overall, the main objective of this PhD research proposal is to develop a localization and mapping system able to localize successfully a mobile robot in a dynamic environment, performing lifelong \gls{SLAM}.
+In order to reach the primary goal, this research thesis proposes to study, benchmark, and/or develop the following items:
 
+\begin{itemize}[nosep]
+\item automatic calibration methods for estimating the extrinsic parameters of sensors on a mobile robot;
+\item sensor models compatible with a \gls{SLAM} probabilistic framework to account the environment dynamics;
+\item modeling of environment dynamics of the map points as a continuous value;
+\item clustering algorithms for evaluating the dynamics of map points contemplating the value for the neighborhood ones;
+\item data association algorithms for feature-based \gls{SLAM} for accounting the environment dynamics;
+\item matching algorithms using raw data, extracted features from the observations, and/or hybrid approaches of both feature and raw data implementations for considering the environment dynamics;
+\item map update methodologies to model the environment dynamics into the map and considering them when adding and removing points from the map representation.
+\end{itemize}
 
-\section{Summary}\label{sec:summary:hypotheses}
-
-
+Nevertheless, this research work will focus on developing algorithms capable of localizing mobile robots in a dynamic indoor environment under real industrial scenario applications.
