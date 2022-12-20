@@ -1,19 +1,164 @@
 \chapter{Research Plan}\label{chap:plan}
 
+The last chapter of this proposal details the PhD thesis research plan for achieving the goals established in Section~\ref{sec:goals} and solving the problem stated in Chapter~\ref{chap:statement}.
+First, Section ~\ref{sec:tasks} describes the tasks foreseen for the execution of the research plan and presents the timeline.
+Section~\ref{sec:milestones} defines milestones for the PhD thesis and the publications expected to be published within the scope of the thesis.
+Then, Section~\ref{sec:dissemination} explains the methodology for scientific dissemination of the main results of this research proposal.
 
 
-\section{Tasks and Milestones}\label{sec:tasks-milestones}
 
 
 
-\section{Timeline}\label{sec:timeline}
+
+\section{Tasks and Timeline}\label{sec:tasks}
+
+This PhD thesis research plan will be executed in three years, starting on January 2023 and expected to end on December 2025. The host institution is \gls{INESCTEC}.
+Furthermore, the proposed work is in line with the roadmap of its mobile robotics team for industrial applications, aiming for a solution of lifelong autonomy in dynamic environments.
+This work also benefits from a close relationship with the GreenAuto project from the \textit{\gls{EU} Recovery and Resilience Plan}, where the project is related to research on autonomous mobile systems for logistics scenarios with flexible storage.
+
+Furthermore, the complete timeline with all the tasks foreseen for the execution of this research proposal's plan is illustrated in Figure~\ref{fig:plan:timeline}. The plan is composed of five main tasks:
+\textit{T1 \gls{SLAM} Framework} (research on \gls{SLAM} solutions and on the modules that integrate the localization and mapping processes),
+\textit{T2 Robot Calibration} (study the automatic robot calibration problem in the context of Hypothesis~\ref{hypothesis:calib}),
+\textit{T3 Dynamics Modeling} (research on dynamics modeling methodologies to explore the validity of Hypotheses~\ref{hypothesis:mapping:1}, \ref{hypothesis:mapping:2}, and \ref{hypothesis:localization}),
+\textit{T4 Test and Validation} (tasks related to the integration of the PhD thesis contributions),
+and \textit{T5 PhD Thesis} (report the results of the thesis).
+Next, further detail is given for each subtask present in the plan.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[angle=90,height=0.95\textheight]{plan/timeline.png}
+  \caption[Timeline of the PhD research plan.]{Timeline of the PhD research plan.}
+  \label{fig:plan:timeline}
+\end{figure}
+
+\subsubsection*{T1 SLAM Framework}
+
+\paragraph{T1.1 Literature and commercial \gls{SLAM} frameworks}
+
+Study, research, and compare existing \gls{SLAM} solutions in the literature and, if possible, commercial systems.
+This task will also identify the advantages, disadvantages, and possible limitations of existing solutions, while also defining adequate evaluation metrics for the comparison of \gls{SLAM} frameworks.
+
+\paragraph{T1.2 Feature extraction algorithms} Study, research, and compare feature extraction algorithms. This task will also study feature extraction depending on different data sources (\eg, 2D and 3D \gls{LiDAR}).
+
+\paragraph{T1.3 Data association algorithms} Study, research, and compare data association algorithms for estimating the correspondence variables between the observed features and the landmarks represented in the map.
+
+\paragraph{T1.4 Sensor data matching algorithms} Study, research, and compare data matching algorithms between the observed data and the current map representation of the environment. The observed data can be defined as the raw sensor data, extracted features, or even an hybrid approach.
+
+\paragraph{T1.5 Feature versus grid-based localization} Study, research, and compare feature and grid-based localization algorithms. This task will also consider the study and research on an hybrid approach, where both feature and grid data are considered simultaneous for estimating the robot's pose.
+
+\paragraph{T1.6 Base \gls{SLAM} framework for RicoSLAM} Research on a base \gls{SLAM} framework for this PhD research proposal. This framework and the respective architecture should consolidate all the knowledge obtained from the results of T1.1--1.5.
+
+\subsubsection*{T2 Robot Calibration}
+
+\paragraph{T2.1 Geometric feature extraction and matching} Study, research, and compare feature extraction and matching algorithms based on geometric cues from the sensors data (\eg, corner points, lines, and planes). This task will possibly leverage the results from tasks T1.2 and T1.3, given the relationship of those two tasks relative to T2.1 in terms of using features for localization.
+
+\paragraph{T2.2 Automatic calibration algorithm} Research on an automatic calibration algorithm to test the validity of Hypothesis~\ref{hypothesis:calib}.
+
+\subsubsection*{T3 Dynamics Modeling}
+
+\paragraph{T3.1 Environment dynamics as a continuous value} Research on a model for estimating the environment dynamics as a continuous value and testing the validity of Hypothesis~\ref{hypothesis:mapping:1}.
+
+\paragraph{T3.2 Dynamics clustering algorithm} Research on a dynamics clustering approach to cluster the map points accordingly to their environment dynamics properties and similarity to the points neighborhood. The approach should consider algorithms from task T1.3 and modify them for the update of the dynamics clustering map.
+
+\paragraph{T3.3 Data association considering dynamics} Research on a data association algorithm to consider the environment dynamics and improve the data association results.
+
+\paragraph{T3.4 Map update accounting dynamics} Research on a map update methodology for considering the estimated environment dynamics and testing the validity of Hypothesis~\ref{hypothesis:mapping:2}.
+
+\paragraph{T3.5 Localization accounting dynamics} Research on a localization algorithm for considering the environment dynamics in the pose estimation and data association processes and testing the validity of Hypothesis~\ref{hypothesis:localization}.
+
+\subsubsection*{T4 Test and Validation}
+
+\paragraph{T4.1 Integration and validation} Consolidate, integrate, test, and validate the PhD contributions in the a \gls{SLAM} framework able to deal with dynamic elements in the scene and achieve lifelong autonomy.
+
+\paragraph{T4.2 Data acquisition} Acquire data using different sensors (\eg, 2D and 3D lasers, RGBD sensors) in adequate environment conditions (\ie, ability of perceiving a variety of different dynamic conditions of the scene -- highly dynamic elements, semi-static changes, \etc) in the scope of this PhD research proposal.
+This task includes the data acquisition experiences to be taken at \gls{FEUP} (room I-108) and IDEPA (industrial application) facilities with the different mobile platforms considered for this PhD thesis (see Section~\ref{sec:robots}).
+
+\subsubsection*{T5 PhD Thesis}
+
+\paragraph{T5.1 Writing the thesis} Report the thesis results obtained from all the other tasks of the research plan in the official document to be delivered at the end of the PhD.
+
+\paragraph{T5.2 Scientific dissemination} Write the main results of the PhD thesis in scientific publications. Disseminate the results in the scientific community using the appropriate channels for that effect (further details given in Section~\ref{sec:dissemination}).
+
+
+
+
+
+
+\section{Milestones and Publications}\label{sec:milestones}
+
+Based on the timeline presented in Figure~\ref{fig:plan:timeline}, this research proposal defines the following milestones:
+
+\begin{itemize}[nosep]
+\item \textbf{M1 Automatic sensor calibration algorithm:} finish the research on the automatic sensor calibration algorithm to be used for estimating the extrinsic sensor and odometry parameters of the robot platforms to be used during the plan execution;
+\item \textbf{M2 Base \gls{SLAM} framework for RicoSLAM:} deadline for the implementation of a base \gls{SLAM} framework for this PhD thesis based on the results from task T1;
+\item \textbf{M3.1 Dynamics Modeling Estimator:} target date for finishing the research on a environment dynamics estimator to be used for the tasks T3.3--3.5;
+\item \textbf{M3.2 RicoSLAM:} deadline for the integration and validation of all contributions related to this PhD research proposal in the desired framework for performing lifelong \gls{SLAM} in dynamic environments, the \textit{RicoSLAM: Long-Term Localization and Mapping in Dynamic Environments} framework.
+\end{itemize}
+
+This research proposal defines also the expected publications to be submitted for publishing the main results of this PhD thesis. The foreseen publications are the following ones:
+
+\begin{itemize}[nosep]
+\item \textbf{P1 Benchmarking of existent \gls{SLAM} solutions:} article reporting the comparison results not only from task T1.1 but possibly also from tasks T1.2--1.5;
+\item \textbf{P2 Automatic sensor calibration algorithm:} conference paper presenting the proposed approach for automatically estimating the extrinsic sensor parameters without recurring to an external system, based on the results from task T2;
+\item \textbf{P3.1 Environment dynamics modeling:} conference paper presenting the methodology for estimating the environment dynamics as a continuous value based on task T3.1;
+\item \textbf{P3.2 Map update accounting the environment dynamics:} article reporting the map update methodology considering the dynamics environment estimation and comparison to the standard update and other approaches based on task T3.4;
+\item \textbf{P3.4 RicoSLAM:} article reporting the main results of this PhD thesis and comparison with current solutions;
+\item \textbf{P4 Long-term \gls{SLAM} dataset in a changing environment:} article presenting a dataset in a dynamic environment in an indoor scene based on the results from task T4.2.
+\end{itemize}
+
+
+
 
 
 
 \section{Scientific Dissemination}\label{sec:dissemination}
 
+Finally, the results dissemination of this PhD research proposal is expected to be through publications for validating the work with peer revision from the scientific community during the PhD.
+A first analysis on publication venues related to the topic long-term localization and mapping is already present in the systematic literature review on that topic, available in Appendix~\ref{ap:slr}.
+Considering that first analysis and that the scientific dissemination will consider both international conferences and prestigious international journals, this research proposal identifies a list for the dissemination of the achieved results. The list is the following one and considers venues indexed by several scientific databases, including Ei Compendex, Inspec, Scopus, and/or Web of Science:
+
+\begin{itemize}[nosep]
+\item Conferences:
+  \begin{itemize}[nosep]
+  \item ACM/IEEE International Conference on Human-Robot Interaction (HRI)
+  \item European Conference on Mobile Robots (ECMR)
+  \item Flexible Automation and Intelligent Manufacturing International Conference (FAIM)
+  \item Iberian Robotics Conference (ROBOT)
+  \item IEEE International Conference on Autonomous Robot Systems and Competitions (ICARSC)
+  \item IEEE International Conference on Robotics and Automation (ICRA)
+  \item IEEE International Intelligent Transportation Systems Conference (ITSC)
+  \item IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)
+  \item International Conference on Computer and Automation Engineering (ICCAE)
+  \item International Conference on Mechatronics, Robotics and Automation (ICMRA)
+  \end{itemize}
+\item Journals:
+  \begin{itemize}[nosep]
+  \item Advanced Robotics (Taylor \& Francis)
+  \item Autonomous Robots (Springer)
+  \item Frontiers in Robotics and AI (Frontiers)
+  \item IEEE Robotics and Automation Letters (IEEE)
+  \item IEEE Transactions on Intelligent Transportation Systems (IEEE)
+  \item IEEE Transactions on Robotics (IEEE)
+  \item International Journal of Advanced Robotic Systems (Sage Journals)
+  \item International Journal of Robotics Research (Sage Journals)
+  \item Journal of Field Robotics (Wiley)
+  \item Journal of Intelligent \& Robotic Systems (Springer)
+  \item Robotics and Autonomous Systems (Elsevier)
+  \end{itemize}
+\end{itemize}
+
+In addition to publish the results in scientific conferences and journals, this PhD thesis proposal also considers social networks to help spreading out the achieved results.
+More specifically, all scientific contributions and achieved results related to the thesis will be posted in ResearchGate and LinkedIn. The first will be used mostly for sharing preprint versions of the submitted papers. As for LinkedIn, this social network will be used as a way to communicate the different achievements accomplished throughout the research plan execution, including publications and relevant results in terms of performing \gls{SLAM} in dynamic environments and automatic calibration of the sensors on a mobile platform. The sharing of results will also consider the elaboration of demonstration videos.
+
+This PhD research proposal also foresees the publication of datasets, as a result from task T4.2 (see Section~\ref{sec:tasks}).
+These datasets will be public and published in the \gls{INESCTEC} research data repository\footnote{\url{https://rdm.inesctec.pt/}}. The main advantages of using the latter are the following ones: link the datasets to the host institution of the PhD thesis (\ie, \gls{INESCTEC}), the compliance of the platform to Open Data in a research context\footnote{\url{https://opendefinition.org/od/2.1/en/}}, and the expected longevity of accessibility for the public links given the use of CKAN\footnote{\url{https://ckan.org/}} (open source data management system) and the repository being hosted in \gls{INESCTEC} servers (\ie, not dependent on third-party services).
+Also, the dissemination of the corresponding results will be in the form of scientific publications, while also spreading out those publications in the social platforms ResearchGate and LinkedIn mentioned previously.
 
 
-\section{Summary}\label{sec:summary:plan}
 
 
+
+
+\section{Summary}
+
+Overall, the work plan presented in this chapter covers the research on all hypotheses discussed and formulated in Section~\ref{sec:hypotheses}. This plan defines all the tasks, milestones, and publications foreseen for the execution of this research proposal, and also defines the respective timeline. However, the plan will be refined during the PhD to deal with unforeseen events and possible delays and/or scientific obstacles found through the plan execution.

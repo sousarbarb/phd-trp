@@ -1,7 +1,14 @@
 \chapter*{Resumo}
 \addcontentsline{toc}{chapter}{Resumo}
 
-PUT HERE ABSTRACT IN PORTUGUESE.
+A operação de robôs móveis autónomos a longo-termo coloca novos desafios ao problema de localização e mapeamento simultâneo.
+Num ambiente estático, o robô necessitaria apenas de uma passagem pelo espaço para construir a respetiva representação do mapa, dado que o mapa permaneceria consistente com o local ao longo do tempo. Contudo, aplicações industriais e orientadas para serviços, entre outras, têm elementos móveis no ambiente ou ocorrem mesmo reconfigurações de elementos do local. De facto, o sistema autónomo deveria decidir como e quando actualizar o mapa.
+Consequentemente, um sistema de localização e mapeamento simultâneo adequado a ambientes dinâmicos deve ser capaz de perceber as mudanças do espaço à volta do robô e manter uma representação do mapa actualizada com o meio envolvente dos robôs.
+Esta proposta de investigação de tese de doutoramento, intitulada \textit{RicoSLAM: Localização e Mapeamento a Longo-Termo em Ambientes Dinâmicos}, visa realizar localização e mapeamento simultâneo a longo prazo em ambientes interiores e dinâmicos com um robô móvel autónomo.
+A proposta de investigação coloca a hipótese de como a estimativa da dinâmica do ambiente como um valor contínuo e a integração da sua estimativa tanto nos processos de localização como de mapeamento deveria melhorar os resultados desses processos em meios dinâmicos.
+A estimativa da dinâmica incluirá possivelmente o estudo de valores anteriores da dinâmica, se e quando os pontos do mapa existem ou não ao longo do tempo, e também a consideração das propriedades dinâmicas de conjunto dos pontos do mapa em relação à sua vizinhança.
+Além disso, esta proposta de investigação pretende também calibrar automaticamente o sistema sensorial do robô a fim de melhorar o desempenho da localização e mapeamento do ambiente, com base na convergência das estimativas de movimento relativo do robô a partir dos diferentes sensores.
+Em geral, esta proposta de investigação prevê contribuições significativas para o actual estado da arte sobre o tema de localização e mapeamento a longo-termo, visando uma solução estável para o problema de localização e mapeamento num ambiente dinâmico.
 
 \hfill\break
 
@@ -12,7 +19,11 @@ PUT HERE ABSTRACT IN PORTUGUESE.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-PUT HERE ABSTRACT IN PORTUGUESE.
+The long-term operation of Autonomous Mobile Robots (AMR) poses new challenges to the Simultaneous Localization and Mapping (SLAM) problem.
+In a static scene, the robot would require just one pass through the environment to build the latter's map representation, given that the map would remain consistent with the scene throughout time. However, industrial and service-oriented applications, among others, have inherently moving elements in the scene or even occurring reconfigurations of elements the environment. Indeed, the autonomous system should decide how and when to update the map, the so-called stability-plasticity dilemma.
+Consequently, a SLAM system adequate for dynamic scenes should be able to perceive the changes in the environment and maintain an up-to-date map representation of the robots' surroundings.
+This PhD thesis research proposal, entitled \textit{RicoSLAM: Long-Term Localization and Mapping in Dynamic Environments}, aims to perform lifelong SLAM within dynamics indoor environments with an AMR. The research proposal hypothesizes how estimating the environment dynamics as a continuous value and integrating their estimation in both localization and mapping processes should improve the SLAM results in changing environments. The dynamics estimation will possibly include the study of the dynamics history, if and when the map points exist or not throughout time, and also the consideration of clustering properties of the map points relative to their neighborhood. Additionally, this research proposal also intends to calibrate automatically the robot's sensory system in order to improve the SLAM performance, based on the convergence of relative motion estimations of the robot's frame from the different sensor sources.
+Overall, this research proposal foresees significant contributions to the current state of the art on the topic of long-term SLAM, aiming for a stable solution for the problem of performing SLAM in a dynamic environment.
 
 \hfill\break
 

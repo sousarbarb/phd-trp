@@ -1,15 +1,116 @@
 \chapter{Preliminary Developments}\label{chap:preliminary}
 
+Next, this chapter presents preliminary works preceding the ones planned and discussed in this PhD thesis research plan (see Chapter~\ref{chap:plan}). 
+First, Section~\ref{sec:robots} explains the modifications performed on mobile robotic platforms to accommodate different sensors for use throughout the work plan execution. 
+Section~\ref{sec:calibration} discusses preliminary research results relative to testing Hypothesis~\ref{hypothesis:calib} presented in Section~\ref{sec:hypotheses}. 
+Then, Section~\ref{sec:slam:intro} presents the initiation to the \gls{SLAM} problem in a real scenario.
+
+
+
+
+
+
+\section{Preparation of the Mobile Platforms}\label{sec:robots}
+
+The goal of this PhD research proposal is achieving long-term localization and mapping in dynamic environments. Although the use of simulation environments can be useful to start the development of the required algorithms to achieve that goal, the simulation may not represent all the challenges that a real changing environment poses to performing \gls{SLAM}, such as sensor noise, robot vibration when moving passed to the sensors, arbitrary and/or unexpected changes in the scene, sensor obstructions, among other factors.
+
+Consequently, some preliminary works preceded the elaboration of the research plan to set up experiences in real scenarios and prepare the robots.
+Figure~\ref{fig:preliminary:feup} presents two mobile platforms present in room I-108 at the \gls{FEUP}. The first platform (Figure~\ref{fig:preliminary:feup:5dpo}) is the five three-wheeled omnidirectional robots belonging to the 5dpo robotics team from \gls{FEUP}\footnote{\url{https://web.fe.up.pt/~robosoc/}}. The modifications made to this robot are the following ones: stabilization of the firmware (communication between the hardware and software), development of ROS~\cite{ros} drivers to allow the motion control of the robot (the software present in the robot is a Lazarus\footnote{\url{https://www.lazarus-ide.org/}}-based distributed architecture), interface of the robot for interacting with the \gls{INESCTEC} Robotics Navigation stack (\eg, allow the navigation in an existent graph), and design and print of a 3D part for allowing setting up different sensors on the top of the robot's ``head'' (originally, the robot used a catadioptric monocular vision system to obtain a 360º \gls{FOV}). The latter modification shown in Figure~\ref{fig:preliminary:feup:5dpo} demonstrates the mounting of a Hokuyo UST-10LX 2D laser sensor. However, the model can be adapted to allow other sensors on the robot, such as a RoboSense RS-Helios 5515 3D \gls{LiDAR} or a OAK-D RGBD sensor (available at \gls{INESCTEC}).
+As for the other platform (see Figure~\ref{fig:preliminary:feup:hangfa}), there is available two Hangfa Discovery Q2 four-wheeled omnidirectional robots owned by \gls{INESCTEC} in the \gls{FEUP}'s I-108 room. The modifications on this robot are mostly related to changing the original proprietary motion drive system to a similar hardware architecture of the 5dpo's three-wheeled robot. Those hardware modifications are required to obtain more control of the platform on the firmware and software sides. Further changes to the Hanfga platform are foreseen relative to a mounting system to allow different types of sensors for data acquisition, similar to 5dpo's robots.
+Also, the fact that both platforms shown in Figure~\ref{fig:preliminary:feup} have an omnidirectional steering geometry makes them holonomic robots, \ie, they do not have non-holonomic kinematic constraints, being able to move in any direction in space at any time~\cite{book:intro-robotics}.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.4\textwidth]{preliminary/3-omni_5dpo.jpg}%
+  \label{fig:preliminary:feup:5dpo}}
+  \hspace{0.5mm}
+  \subfloat[][]{\includegraphics[width=0.4\textwidth]{preliminary/4-omni_hangfa-q2.jpg}%
+  \label{fig:preliminary:feup:hangfa}}
+  \caption[Ground mobile platforms available at the Faculty of Engineering of the University of Porto (FEUP) for this PhD thesis.]{Ground mobile platforms available at the \glsfirst{FEUP} for this PhD thesis: (a) three-wheeled omnidirectional robot of the 5dpo robotics team; (b) Hangfa Discovery Q2 four-wheeled omnidirectional robot.}
+  \label{fig:preliminary:feup}
+\end{figure}
+
+The installation of the two platforms shown in Figure~\ref{fig:preliminary:feup} at \gls{FEUP}'s facilities, in terms of them navigating autonomously, poses an interesting challenge in terms of environment dynamics. One example is the robots moving in the -1 floor of the \gls{DEEC} at \gls{FEUP} between the room I-108 and the rooms I-113 and I-114 (see Figure~\ref{fig:preliminary:feup:deec}), where the latter two are occupied by the \gls{CRIIS} from \gls{INESCTEC}. The halls have highly dynamic elements represented by persons moving in the scenario and doors. As for the rooms themselves, the I-108 has semi-static changes occurring between visits due to that room being shared by several research teams and also personnel from \gls{FEUP}, involving boxes, chairs and other elements moving from place to place.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.70\textwidth]{preliminary/feup_deec_-1_path.png}
+  \caption[Floor -1 of the Department of Electrical and Computers Engineering (DEEC) at FEUP.]{Floor -1 of the \glsfirst{DEEC} at \gls{FEUP}. Path between the room I-108 and the rooms I-113 and I-114 illustrated as a red line in the floor plan.}
+  \label{fig:preliminary:feup:deec}
+\end{figure}
+
+Furthermore, another mobile platform modified in the preliminary phase to the elaboration of this PhD research proposal is illustrated in Figure~\ref{fig:preliminary:idepa}. The mobile platform is a tricycle robot installed by \gls{INESCTEC} at the IDEPA's facilities\footnote{\url{https://www.idepa.com/}}.
+Initially, the robot had a Hokuyo UST-10LX 2D laser at the top of it dedicated to autonomous navigation purposes, given that the higher the sensor is the scene is expected to be more static, considering a 2D perspective. However, the goal of this PhD thesis is to deal with changing environments.
+Thus, two Sick S300 2D lasers were installed near the ground to increase the environment dynamics captured by these two sensors (\eg, legs from moving people, boxes changing places).
+A 360º \gls{FOV} configuration (putting the sensors at opposite corners of the base) was not possible to install due to safety directives defined by the company (the sensors would stick out of the robot's base frame, possibly endangering the workers).
+Nevertheless, the 3D part designed and printed specifically for the IDEPA's robot allowed the installation of the two lasers at the front and the back of the vehicle, only not being visible to the sensors the environment at the sides of the robot.
+Also, the 3D support of the lasers allows adjusting them in terms of pitch and roll, facilitating the installation of these for trying to insure parallel readings to the ground.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[][]{\includegraphics[width=0.4\textwidth]{preliminary/tricycle_idepa-rosie_front.jpg}%
+  \label{fig:preliminary:idepa:front}}
+  \hspace{0.5mm}
+  \subfloat[][]{\includegraphics[width=0.4\textwidth]{preliminary/tricycle_idepa-rosie_back.jpg}%
+  \label{fig:preliminary:idepa:back}}
+  \caption[Tricycle ground mobile robot installed by the INESC TEC -- Institute for Systems and Computer Engineering, Technology and Science at the IDEPA's facilities.]{Tricycle ground mobile robot installed by the \glsfirst{INESCTEC} at the IDEPA's facilities: (a) front-view; (b) back-view.}
+  \label{fig:preliminary:idepa}
+\end{figure}
+
+The IDEPA's case study will be interesting for this PhD research proposal considering that it is a real scenario in an industrial environment. As discussed in the systematic review available in Appendix~\ref{ap:slr}, most of the public datasets related to the \gls{SLAM} problem are mostly in laboratory, office, or outdoor environments. Therefore, the data acquisition occurring at the IDEPA's facilities will be interesting for testing and validating the results foreseen for this PhD thesis in an industrial context.
+
+
+
+
 
 
 \section{Robot Calibration}\label{sec:calibration}
+
+Next, in the scope of the curricular unit Advanced Topics in Electric and Computers Engineering, initial tests relative to research on Hypothesis~\ref{hypothesis:calib} are presented in a technical report~\cite{sousa:calibration:extrinsic}. These tests followed an optimization-based formulation similar to GraphSLAM (see Section~\ref{sec:slam:graph}) for estimating the extrinsic sensor parameters of wheel odometry--2D laser sensor setup. The proposed methodology requires at least two virtual measurements (see Section~\ref{sec:slam:graph}) for each edge for evaluating the convergence between two different sources ($z_{ij}^{sens_1}$ and $z_{ij}^{sens_2}$, respectively), following the statement in Hypothesis~\ref{hypothesis:calib}.
+In the case scenario tested in report~\cite{sousa:calibration:extrinsic}, one measurement $z_{ij}^{odo}$ corresponds to the wheeled odometry estimation between pose $x_i$ and $x_j$ and the other measurement $z_{ij}^{las}$ to the matching result between the 2D laser scans acquired at those same poses. Figure~\ref{fig:preliminary:calibration} illustrates how the edges are created in the report, considering the initial pose $x_0$ the starting end of all edges, and the sampled poses through the remaining of the robot path ($x_{1:N}$) at the other end of the edges.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.55\textwidth]{preliminary/preliminary-work_calibration.pdf}
+  \caption[Creation of the edges represented by the predicted virtual measurements $\hat{z}_{ij}=x_j-x_i$ in the graph between robot poses $x$ for the automatic calibration algorithm.]{Creation of the edges represented by the predicted virtual measurements $\hat{z}_{ij}=x_j-x_i$ in the graph between robot poses $x$ for the automatic calibration algorithm. The calibration path taken by the robot starts at pose $x_0$ and ends at $x_N$.}
+  \label{fig:preliminary:calibration}
+\end{figure}
+
+Furthermore, the methodology followed in the report \cite{sousa:calibration:extrinsic} considers the same calibration path as in the odometry calibration work of Sousa~\etal~\cite{sousa:calibration:optiodom}, given the circular path with decreasing and/or increasing radius demonstrated to make observable all odometry calibration parameters. However, the methodology is not limited to only that calibration path.
+As for the mathematical formulation of the optimization-based approach, Equation~\ref{eq:preliminary:calibration} defines the cost function to be minimized by an optimization algorithm. This equation differs from the one for GraphSLAM (see Equations~\ref{eq:slam:graph:function} and \ref{eq:slam:graph:solution}) in the sense that is not the error between the virtual and the predicted measurement that will be minimized ($z_{ij}-\hat{z}_{ij}$), but instead, the difference between different virtual measurements along the same edge ($z_{0j}^{odo} - z_{0j}^{las}$). The formulation shown in Equation~\ref{eq:preliminary:calibration} considers that the virtual measurements relative to wheel odometry ($z_{0j}^{odo}$) and scan matching ($z_{0j}^{las}$) depend on the respective odometry ($s^{odo}$) and extrinsic 2D laser ($s^{las}$) parameters, the latter ones defining a 2D homogeneous transformation (2D translation and a yaw angle) relative to the robot's coordinate frame.
+
+\begin{equation}\label{eq:preliminary:calibration}
+\{s^{odo,*},s^{las,*}\} = \argmin_{s^{odo},s^{las}} \sum_{j=1}^N \lVert z_{0j}^{odo} - z_{0j}^{las} \rVert_2
+\end{equation}
+
+However, as the technical report indicates, several improvements can be made to the proposed automatic calibration methodology, some of them are the following ones:
+
+\begin{itemize}[nosep]
+\item improve the matching result by extracting geometric features (lines, planes, corner points) from laser data instead of using only the raw data of the sensor;
+\item research on optimization algorithms able to improve the computational performance when searching a solution for the calibration parameters;
+\item testing the methodology with other sensors.
+\end{itemize}
+
+The improvements to be made to the methodology mentioned previously will be performed during this PhD thesis proposal, as will be discussed in Chapter~\ref{chap:plan}.
+
+
+
 
 
 
 \section{Introduction to SLAM}\label{sec:slam:preliminary}
 
+Lastly, the other preliminary work preceding the elaboration of this research proposal is an initial mapping result obtained from using the ROS~\cite{ros,ros2} package \texttt{slam\_toolbox} mentioned in Chapter~\ref{chap:literature}.
+The environment considered for this first experience is room I-108 at \gls{FEUP}, using the 5dpo team's three-wheeled omnidirectional robot for the mapping process.
+Also, the resulting grid map is illustrated in Figure~\ref{fig:preliminary:slam_toolbox}, while the mapping process is available for illustration purposes in a YouTube video\footnote{\url{https://youtu.be/ax8cOVe6Z5I}}.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[angle=-90,width=0.8\textwidth]{preliminary/map_i-108_slam_toolbox.png}
+  \caption[Map resulting from a SLAM experience using the \texttt{slam\_toolbox} ROS package with the sensor setup wheeled odometry--2D laser on the 5dpo's three-wheeled omnidirectional robot.]{Map resulting from a \gls{SLAM} experience using the \texttt{slam\_toolbox} ROS package with the sensor setup wheeled odometry--2D laser on the 5dpo's three-wheeled omnidirectional robot.}
+  \label{fig:preliminary:slam_toolbox}
+\end{figure}
 
-\section{Summary}\label{sec:summary:preliminary}
-
-
+The map shown in Figure~\ref{fig:preliminary:slam_toolbox} first validates the preparation work of the robotic platform from the 5dpo robotics team for use in this PhD thesis proposal in terms of the sensor combination wheeled odometry--2D laser.
+Moreover, the artifacts on the map near the room walls are relative to boxes, chairs, and mobile tables, among other changing elements. The presence of these elements shows why room I-108 is an interesting case study for the research on \gls{SLAM} in dynamic scenes.
+Nevertheless, this PhD research proposal will carry out more experiences and research on the topic, as will be explained in the next chapter.
